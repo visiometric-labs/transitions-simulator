@@ -259,39 +259,14 @@ export class LandingScreen {
       document.documentElement.requestFullscreen().catch(() => {});
     }
 
-    // 3. Sonido sutil de entrada
-    this.playStartChime();
-
-    // 4. Cambiar estado a experiencia en el simulador
+    // 3. Cambiar estado a experiencia en el simulador
     simulatorState.setScreen('experience');
 
-    // 5. Ocultar completamente del DOM tras la animación
+    // 4. Ocultar completamente del DOM tras la animación
     setTimeout(() => {
       if (simulatorState.screen === 'experience') {
         this.element.style.display = 'none';
       }
     }, 360);
-  }
-
-  playStartChime() {
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(520, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.35);
-
-      gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.55);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.56);
-    } catch {}
   }
 }

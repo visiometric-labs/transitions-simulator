@@ -413,3 +413,84 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.85); }
 }
+
+/* Adaptabilidad Responsiva en Dispositivos Móviles y Táctiles */
+@media (max-width: 768px) {
+  .brand-badge {
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  .brand-title {
+    font-size: 1.05rem;
+  }
+  .brand-sub {
+    font-size: 0.60rem;
+  }
+
+  .hud-meter-container {
+    min-width: unset;
+    padding: 4px 10px;
+    gap: 8px;
+    border-radius: 18px;
+    flex: 1;
+  }
+  .meter-legend {
+    font-size: 0.68rem;
+  }
+  .meter-uv-pill {
+    min-width: 44px;
+    padding: 2px 6px;
+    border-radius: 10px;
+  }
+  .meter-uv-label {
+    font-size: 0.55rem;
+  }
+  .meter-uv-value {
+    font-size: 0.82rem;
+  }
+
+  .scene-switcher-container {
+    padding: 3px;
+    border-radius: 18px;
+  }
+  .scene-btn {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+  .btn-fullscreen-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Selector de lentes compacto para no invadir el centro de la pantalla */
+  .lens-selector-card {
+    width: 165px;
+    padding: 10px 8px;
+    border-radius: 16px;
+    gap: 6px;
+  }
+  .family-title {
+    font-size: 0.68rem;
+  }
+  .family-grid {
+    gap: 4px;
+  }
+  .lens-swatch-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+  }
+
+  /* Avatar Card proporcionalmente compacto en esquina inferior derecha */
+  .avatar-widget-card {
+    width: 125px;
+    height: 155px;
+    border-radius: 16px;
+  }
+  .avatar-badge-status {
+    top: 6px;
+    right: 6px;
+    font-size: 0.55rem;
+    padding: 2px 5px;
+  }
+}

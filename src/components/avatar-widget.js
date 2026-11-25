@@ -43,33 +43,9 @@ export class AvatarWidget {
   }
 
   bindEvents() {
-    // Clic en el avatar para provocar reacción de aplauso/asombro e interacción
+    // Clic en el avatar para provocar reacción de aplauso/asombro e interacción visual (sin sonido)
     this.element.addEventListener('click', () => {
-      this.playPokeAudio();
       simulatorState.triggerAvatarReaction('clapping');
     });
-  }
-
-  playPokeAudio() {
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(520, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(780, audioCtx.currentTime + 0.12);
-      osc.frequency.exponentialRampToValueAtTime(620, audioCtx.currentTime + 0.25);
-
-      gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.30);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.31);
-    } catch {}
   }
 }

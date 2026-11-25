@@ -320,14 +320,67 @@ export class GlassesPOV {
       }
     });
 
-    // Filtro para ignorar toques/clics sobre botones o tarjetas interactivas
+    // Filtro estricto para ignorar toques/clics sobre botones o tarjetas interactivas
     const isInteractiveUI = (target) => {
       if (!target || !target.closest) return false;
-      return !!target.closest('button, input, a, .lens-selector-card, .brand-badge, .hud-actions-right, .avatar-widget-card, .landing-overlay, .btn-recenter-pill');
+      return !!target.closest(
+        'button, [role="button"], input, select, a, ' +
+        '.lens-selector-card, .avatar-widget-card, .btn-recenter-pill, ' +
+        '.scene-switcher-container, .brand-badge, .btn-fullscreen-toggle, ' +
+        '.landing-overlay, .cta-button-main, .hud-actions-right, .hud-meter-container'
+      );
     };
 
-    // Control de mirada 100% a voluntad del paciente (Arrastrar intencionalmente)
-    this.element.addEventListener('pointerdown', (e) => {
+    // 1. GESTIÓN TÁCTIL NATIVA PARA MÓVILES (Smartphones / Tablets iOS y Android)
+    const onTouchStart = (e) => {
+      if (simulatorState.screen !== 'experience') return;
+      if (isInteractiveUI(e.target)) return;
+      if (e.touches && e.touches.length > 0) {
+        this.isDragging = true;
+        this.startX = e.touches[0].clientX;
+        this.startY = e.touches[0].clientY;
+        this.element.classList.add('is-dragging');
+        this.hideHintPill();
+      }
+    };
+
+    const onTouchMove = (e) => {
+      if (simulatorState.screen !== 'experience' || !this.isDragging) return;
+      if (e.touches && e.touches.length > 0) {
+        // Bloquear desplazamiento y rebote nativo del navegador móvil durante el arrastre
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        const clientX = e.touches[0].clientX;
+        const clientY = e.touches[0].clientY;
+
+        const denomX = window.innerWidth * 0.44;
+        const denomY = window.innerHeight * 0.40;
+        const deltaX = (clientX - this.startX) / denomX;
+        const deltaY = (clientY - this.startY) / denomY;
+        this.startX = clientX;
+        this.startY = clientY;
+
+        this.targetGazeX = Math.max(-1, Math.min(1, this.targetGazeX + deltaX));
+        this.targetGazeY = Math.max(-1, Math.min(1, this.targetGazeY + deltaY));
+      }
+    };
+
+    const onTouchEnd = () => {
+      if (this.isDragging) {
+        this.isDragging = false;
+        this.element.classList.remove('is-dragging');
+      }
+    };
+
+    window.addEventListener('touchstart', onTouchStart, { passive: false });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+    // 2. GESTIÓN DE RATÓN Y PUNTERO (Desktop / Stylus)
+    const onPointerDown = (e) => {
+      if (e.pointerType === 'touch') return; // En móviles se maneja por touch events dedicados
       if (simulatorState.screen !== 'experience') return;
       if (isInteractiveUI(e.target)) return;
 
@@ -336,40 +389,39 @@ export class GlassesPOV {
       this.startY = e.clientY;
       this.element.classList.add('is-dragging');
       this.hideHintPill();
+    };
 
-      try {
-        this.element.setPointerCapture(e.pointerId);
-      } catch {}
-    });
-
-    this.element.addEventListener('pointermove', (e) => {
+    const onPointerMove = (e) => {
+      if (e.pointerType === 'touch') return;
       if (simulatorState.screen !== 'experience' || !this.isDragging) return;
 
-      const deltaX = (e.clientX - this.startX) / (window.innerWidth * 0.38);
-      const deltaY = (e.clientY - this.startY) / (window.innerHeight * 0.38);
+      const denomX = window.innerWidth * 0.38;
+      const denomY = window.innerHeight * 0.38;
+      const deltaX = (e.clientX - this.startX) / denomX;
+      const deltaY = (e.clientY - this.startY) / denomY;
       this.startX = e.clientX;
       this.startY = e.clientY;
 
-      // Actualizar posición de mirada deseada por el paciente
       this.targetGazeX = Math.max(-1, Math.min(1, this.targetGazeX + deltaX));
       this.targetGazeY = Math.max(-1, Math.min(1, this.targetGazeY + deltaY));
-    });
+    };
 
-    const onPointerEnd = (e) => {
+    const onPointerUp = (e) => {
+      if (e.pointerType === 'touch') return;
       if (this.isDragging) {
         this.isDragging = false;
         this.element.classList.remove('is-dragging');
-        try {
-          this.element.releasePointerCapture(e.pointerId);
-        } catch {}
       }
     };
 
-    this.element.addEventListener('pointerup', onPointerEnd);
-    this.element.addEventListener('pointercancel', onPointerEnd);
+    window.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
 
-    // Doble clic para centrar la mirada de inmediato
-    this.element.addEventListener('dblclick', (e) => {
+    // Doble clic o doble toque para centrar la mirada de inmediato
+    window.addEventListener('dblclick', (e) => {
+      if (simulatorState.screen !== 'experience') return;
       if (isInteractiveUI(e.target)) return;
       this.targetGazeX = 0;
       this.targetGazeY = 0;
