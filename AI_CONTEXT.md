@@ -33,8 +33,13 @@
 
 A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico completamente operativa:
 
-### A. Motor Óptico de Primera Persona (POV) con Capas de Deslumbramiento
-* Archivos: `src/components/glasses-pov.js`, `src/scenes/scene-manager.js`, `src/styles/layout.css`, `src/styles/components.css`.
+### A. Motor Óptico de Primera Persona (POV) con Cinemática Fisiológica
+* Archivos: `src/core/camera-controller.js`, `src/components/glasses-pov.js`, `src/scenes/scene-manager.js`, `src/styles/layout.css`, `src/styles/components.css`.
+* **Cinemática de Cuello Humano (Inspirada en Filters-Simulator, sin joystick)**:
+  - Modelo fisiológico de rotación con ángulos Yaw (horizontal ~±45°) y Pitch (vertical ~+36° / -40°).
+  - Inercia táctil cinemática (*Momentum Fling*) con fricción suave (`*= 0.88`) al soltar el dedo o ratón.
+  - Amortiguación exponencial independiente del framerate (`1.0 - Math.exp(-24 * dtSeconds)`) para una respuesta sedosa a 60Hz, 90Hz o 120Hz+.
+  - Control por arrastre directo (táctil o ratón) y atajos de teclado (WASD / Flechas) sin necesidad de joystick virtual.
 * **Visión al Descubierto (Sin Gafas)**:
   - 4 capas graduadas: Base fotográfica sobreexpuesta (50,000+ lux), Bloom corneal (`mix-blend-mode: screen`), Puntos calientes especulares (`mix-blend-mode: color-dodge`) y Velo solar cegador con rayos volumétricos y destellos anamórficos (deslumbramiento calibrado a nivel óptimo para demostración clínica).
 * **Visión a Través del Cristal (Transitions®)**:
@@ -43,7 +48,7 @@ A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico comp
 * **Navegación Interactiva de la Mirada (Gaze POV) en Desktop y Móvil**:
   - **Soporte Táctil Completo en Celulares y Tablets**: Eventos táctiles nativos (`touchstart`, `touchmove`, `touchend`, `touchcancel`) con `{ passive: false }` y `preventDefault()` para evitar bloqueos por gestos del navegador móvil (pull-to-refresh, bounce scrolling).
   - **Intercepción de Puntero Corregida**: Contenedores estructurales (`.hud-header-container`, `.hud-body-container`) configurados con `pointer-events: none;`, dejando solo los botones y controles específicos con `pointer-events: auto;`. De esta forma, cualquier toque en el área visual y periférica arrastra la mirada sin obstáculos.
-  - Al inclinar la vista hacia arriba (`gazeY < 0`), el usuario mira **directamente por encima de las gafas** hacia el sol cegador.
+  - Al inclinar la vista hacia arriba (`pitch > 0`, `gazeY < 0`), el usuario mira **directamente por encima de las gafas** hacia el sol cegador.
   - Al regresar al centro, el usuario experimenta el alivio inmediato del lente.
   - Botón flotante para recentrar la mirada a voluntad (`#btn-recenter-gaze`) o doble toque/doble clic.
   - Sincronización de coordenadas con paralaje dinámico entre fondo panorámico y los cristales.

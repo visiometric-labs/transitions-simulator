@@ -20,10 +20,14 @@ Permite al paciente experimentar de forma vívida e interactiva la diferencia en
 ### 1. Visión en Primera Persona (POV) con Comparativa de Deslumbramiento
 - **Visión al Descubierto (Sin Gafas)**: Implementa un motor óptico multinivel de 4 capas con sobreexposición natural (50,000+ lux), resplandor fotónico (*bloom* corneal), puntos calientes especulares (*hotspots* con `color-dodge`) y velo solar cegador (*veiling glare* y rayos volumétricos).
 - **Visión a Través del Cristal (Transitions®)**: Elimina el deslumbramiento cegador, reduce la luminancia a un nivel descansado, restaura el contraste cromático de los detalles y aplica el tintado cinético activo con reflejos antirreflejo Crizal y espejos flash.
-- **Navegación Interactiva de la Mirada (Gaze POV)**: El paciente puede mover el cursor o arrastrar con el dedo para inclinar su línea de visión:
+- **Navegación Interactiva de la Mirada (Gaze POV) con Cinemática Fisiológica**: El paciente puede arrastrar con el dedo o ratón, o usar teclado (WASD/flechas), con una cinemática de rotación de cuello humano inspirada en la física de *Filters-Simulator*:
+  - **Física de Cuello Real**: Ángulos Yaw (giro horizontal ~±45°) y Pitch (inclinación vertical ~+36° / -40°) con amortiguación exponencial independiente del framerate (60-120+ FPS).
+  - **Inercia Táctil (Momentum Fling)**: Al soltar el dedo o ratón, la mirada continúa deslizándose suavemente con fricción progresiva.
+  - **Sin Joystick Virtual**: Manipulación 100% directa en la escena con un dedo o puntero, manteniendo una pantalla limpia para mostrador.
   - **Mirar hacia Arriba**: Permite mirar directamente por encima de la montura al sol deslumbrante sin filtro.
   - **Mirar al Centro**: El paciente vuelve a cubrir su línea de visión con el lente fotosensible, experimentando el confort inmediato.
   - **Mirar a los Lados**: Comparativa directa de visión periférica descubierta vs. visión central protegida.
+  - **Recentrado Inmediato**: Botón flotante dinámico y doble toque/clic para volver al centro.
 
 ### 2. Avatar Facial 3D Real (Three.js + WebGL)
 - **Modelo 3D Integrado (`avatar.glb`)**: Esqueleto óseo completo con articulación facial y *morph targets* de parpadeo involuntario fisiológico y sonrisa.

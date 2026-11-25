@@ -1,5 +1,6 @@
 import { eventBus } from '../core/event-bus.js';
 import { simulatorState } from '../core/simulator-state.js';
+import { CameraController } from '../core/camera-controller.js';
 
 export class GlassesPOV {
   constructor(containerElement) {
@@ -8,14 +9,9 @@ export class GlassesPOV {
     this.currentLens = simulatorState.getCurrentLens();
     this.currentScene = simulatorState.getCurrentScene();
 
-    // Estado cinemático de la mirada en primera persona
-    this.targetGazeX = 0;
-    this.targetGazeY = 0;
-    this.currentGazeX = 0;
-    this.currentGazeY = 0;
-    this.isDragging = false;
-    this.startX = 0;
-    this.startY = 0;
+    // Controlador cinemático con física de rotación de cuello e inercia táctil (estilo Filters-Simulator)
+    this.camera = new CameraController();
+    this.lastFrameTime = performance.now();
     this.hintDismissed = false;
 
     this.masterGroup = null;
@@ -331,45 +327,62 @@ export class GlassesPOV {
       );
     };
 
+    // =========================================================================
     // 1. GESTIÓN TÁCTIL NATIVA PARA MÓVILES (Smartphones / Tablets iOS y Android)
+    // =========================================================================
+    let activeTouchId = null;
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+
     const onTouchStart = (e) => {
       if (simulatorState.screen !== 'experience') return;
       if (isInteractiveUI(e.target)) return;
+      if (activeTouchId !== null) return; // Un solo dedo a la vez para evitar saltos o conflictos
       if (e.touches && e.touches.length > 0) {
-        this.isDragging = true;
-        this.startX = e.touches[0].clientX;
-        this.startY = e.touches[0].clientY;
+        const touch = e.touches[0];
+        activeTouchId = touch.identifier;
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        this.camera.stopDragMomentum();
         this.element.classList.add('is-dragging');
         this.hideHintPill();
       }
     };
 
     const onTouchMove = (e) => {
-      if (simulatorState.screen !== 'experience' || !this.isDragging) return;
-      if (e.touches && e.touches.length > 0) {
-        // Bloquear desplazamiento y rebote nativo del navegador móvil durante el arrastre
-        if (e.cancelable) {
-          e.preventDefault();
+      if (simulatorState.screen !== 'experience' || activeTouchId === null) return;
+      for (let i = 0; i < e.touches.length; i++) {
+        if (e.touches[i].identifier === activeTouchId) {
+          // Bloquear desplazamiento y rebote nativo del navegador durante el arrastre
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+          const clientX = e.touches[i].clientX;
+          const clientY = e.touches[i].clientY;
+          const deltaX = clientX - lastTouchX;
+          const deltaY = clientY - lastTouchY;
+          lastTouchX = clientX;
+          lastTouchY = clientY;
+
+          this.camera.applyDelta(deltaX, deltaY, window.innerWidth, window.innerHeight);
+          break;
         }
-        const clientX = e.touches[0].clientX;
-        const clientY = e.touches[0].clientY;
-
-        const denomX = window.innerWidth * 0.44;
-        const denomY = window.innerHeight * 0.40;
-        const deltaX = (clientX - this.startX) / denomX;
-        const deltaY = (clientY - this.startY) / denomY;
-        this.startX = clientX;
-        this.startY = clientY;
-
-        this.targetGazeX = Math.max(-1, Math.min(1, this.targetGazeX + deltaX));
-        this.targetGazeY = Math.max(-1, Math.min(1, this.targetGazeY + deltaY));
       }
     };
 
-    const onTouchEnd = () => {
-      if (this.isDragging) {
-        this.isDragging = false;
-        this.element.classList.remove('is-dragging');
+    const onTouchEnd = (e) => {
+      if (activeTouchId !== null) {
+        let touchStillActive = false;
+        for (let i = 0; i < e.touches.length; i++) {
+          if (e.touches[i].identifier === activeTouchId) {
+            touchStillActive = true;
+            break;
+          }
+        }
+        if (!touchStillActive) {
+          activeTouchId = null;
+          this.element.classList.remove('is-dragging');
+        }
       }
     };
 
@@ -378,38 +391,50 @@ export class GlassesPOV {
     window.addEventListener('touchend', onTouchEnd, { passive: true });
     window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
+    // =========================================================================
     // 2. GESTIÓN DE RATÓN Y PUNTERO (Desktop / Stylus)
+    // =========================================================================
+    let activePointerId = null;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+
     const onPointerDown = (e) => {
       if (e.pointerType === 'touch') return; // En móviles se maneja por touch events dedicados
       if (simulatorState.screen !== 'experience') return;
       if (isInteractiveUI(e.target)) return;
+      if (activePointerId !== null) return;
 
-      this.isDragging = true;
-      this.startX = e.clientX;
-      this.startY = e.clientY;
+      activePointerId = e.pointerId;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+      this.camera.stopDragMomentum();
       this.element.classList.add('is-dragging');
       this.hideHintPill();
+
+      try {
+        this.element.setPointerCapture(e.pointerId);
+      } catch {}
     };
 
     const onPointerMove = (e) => {
       if (e.pointerType === 'touch') return;
-      if (simulatorState.screen !== 'experience' || !this.isDragging) return;
+      if (e.pointerId !== activePointerId || simulatorState.screen !== 'experience') return;
 
-      const denomX = window.innerWidth * 0.38;
-      const denomY = window.innerHeight * 0.38;
-      const deltaX = (e.clientX - this.startX) / denomX;
-      const deltaY = (e.clientY - this.startY) / denomY;
-      this.startX = e.clientX;
-      this.startY = e.clientY;
+      const deltaX = e.clientX - lastPointerX;
+      const deltaY = e.clientY - lastPointerY;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
 
-      this.targetGazeX = Math.max(-1, Math.min(1, this.targetGazeX + deltaX));
-      this.targetGazeY = Math.max(-1, Math.min(1, this.targetGazeY + deltaY));
+      this.camera.applyDelta(deltaX, deltaY, window.innerWidth, window.innerHeight);
     };
 
     const onPointerUp = (e) => {
       if (e.pointerType === 'touch') return;
-      if (this.isDragging) {
-        this.isDragging = false;
+      if (e.pointerId === activePointerId) {
+        try {
+          this.element.releasePointerCapture(e.pointerId);
+        } catch {}
+        activePointerId = null;
         this.element.classList.remove('is-dragging');
       }
     };
@@ -419,21 +444,42 @@ export class GlassesPOV {
     window.addEventListener('pointerup', onPointerUp);
     window.addEventListener('pointercancel', onPointerUp);
 
-    // Doble clic o doble toque para centrar la mirada de inmediato
+    // =========================================================================
+    // 3. NAVEGACIÓN CINEMÁTICA POR TECLADO (WASD y Teclas de Flecha)
+    // =========================================================================
+    window.addEventListener('keydown', (e) => {
+      if (simulatorState.screen !== 'experience') return;
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        this.camera.stepYaw(-1);
+        this.hideHintPill();
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        this.camera.stepYaw(1);
+        this.hideHintPill();
+      } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        this.camera.stepPitch(1);
+        this.hideHintPill();
+      } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        this.camera.stepPitch(-1);
+        this.hideHintPill();
+      }
+    });
+
+    // =========================================================================
+    // 4. RECENTRADO SUAVE (Doble Clic / Doble Toque / Botón Flotante)
+    // =========================================================================
     window.addEventListener('dblclick', (e) => {
       if (simulatorState.screen !== 'experience') return;
       if (isInteractiveUI(e.target)) return;
-      this.targetGazeX = 0;
-      this.targetGazeY = 0;
+      this.camera.recenter();
     });
 
-    // Botón flotante para recentrar la mirada
     const recenterBtn = this.element.querySelector('#btn-recenter-gaze');
     if (recenterBtn) {
       recenterBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        this.targetGazeX = 0;
-        this.targetGazeY = 0;
+        this.camera.recenter();
       });
     }
 
@@ -453,36 +499,39 @@ export class GlassesPOV {
   }
 
   /**
-   * Bucle a 60 FPS con interpolación cinemática suave para la mirada del paciente:
-   * Solo se mueve cuando el paciente arrastra la vista a voluntad.
+   * Bucle a 60-120 FPS con física cinemática fisiológica de rotación de cabeza:
+   * Aplica inercia de momentum fling al soltar y amortiguación exponencial suave.
    */
   startGazeLoop() {
     const recenterBtn = this.element.querySelector('#btn-recenter-gaze');
+    this.lastFrameTime = performance.now();
 
     const loop = () => {
+      const now = performance.now();
+      const deltaTime = Math.min(now - this.lastFrameTime, 64);
+      this.lastFrameTime = now;
+
       if (simulatorState.screen === 'experience') {
-        // Interpolación amortiguada continua (lerp)
-        this.currentGazeX += (this.targetGazeX - this.currentGazeX) * 0.08;
-        this.currentGazeY += (this.targetGazeY - this.currentGazeY) * 0.08;
+        // 1. Actualización de física cinemática (inercia táctil + lerp exponencial)
+        this.camera.update(deltaTime);
+
+        // 2. Obtener coordenadas normalizadas de mirada (-1 a +1)
+        const { gazeX, gazeY, isDisplaced } = this.camera.getNormalizedGaze();
 
         // Mostrar u ocultar botón de recentrado según el desplazamiento
         if (recenterBtn) {
-          const isDisplaced = Math.abs(this.currentGazeX) > 0.16 || Math.abs(this.currentGazeY) > 0.16;
           recenterBtn.classList.toggle('visible', isDisplaced);
         }
 
-        // Emitir posición de mirada para sincronizar el fondo panorámico
-        eventBus.emit('gaze:update', {
-          gazeX: this.currentGazeX,
-          gazeY: this.currentGazeY
-        });
+        // Emitir posición de mirada para sincronizar el fondo panorámico (SceneManager)
+        eventBus.emit('gaze:update', { gazeX, gazeY });
 
-        // Articular las gafas en primera persona:
-        // Cuando el paciente mira arriba (gazeY < 0), la línea de vista se eleva por encima del marco (glassesOffsetY > 0)
-        // para mirar directamente por encima de las gafas a voluntad.
-        const glassesOffsetY = -this.currentGazeY * 115;
-        const glassesOffsetX = this.currentGazeX * 45;
-        const glassesRotate = this.currentGazeX * 1.6;
+        // 3. Articular las gafas en primera persona:
+        // Cuando el paciente mira arriba (gazeY < 0, pitch > 0), la línea de vista se eleva por encima del marco (glassesOffsetY > 0)
+        // para mirar directamente por encima de las gafas hacia el sol sin filtro.
+        const glassesOffsetY = -gazeY * 115;
+        const glassesOffsetX = gazeX * 45;
+        const glassesRotate = gazeX * 1.6;
 
         if (this.masterGroup) {
           this.masterGroup.setAttribute(
@@ -491,9 +540,9 @@ export class GlassesPOV {
           );
         }
 
-        // Sincronizar las imágenes dentro de los cristales para que coincidan con las coordenadas del mundo
-        const imgOffsetX = (-this.currentGazeX * 85 - glassesOffsetX) * 0.72;
-        const imgOffsetY = (-this.currentGazeY * 60 - glassesOffsetY) * 0.72;
+        // 4. Sincronizar las imágenes dentro de los cristales para que coincidan con las coordenadas del mundo
+        const imgOffsetX = (-gazeX * 85 - glassesOffsetX) * 0.72;
+        const imgOffsetY = (-gazeY * 60 - glassesOffsetY) * 0.72;
 
         this.allSceneImages.forEach(img => {
           if (img) {
