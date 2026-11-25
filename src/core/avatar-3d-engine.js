@@ -155,8 +155,8 @@ export class Avatar3DEngine {
   setupGlassesFrameMaterial(glassesNode) {
     glassesNode.material = new THREE.MeshStandardMaterial({
       color: new THREE.Color(0x181e28), // Acetato negro mate/satinado premium
-      roughness: 0.28,
-      metalness: 0.12,
+      roughness: 0.85,
+      metalness: 0.05,
       depthWrite: true
     });
   }
@@ -211,18 +211,11 @@ export class Avatar3DEngine {
     geom.setIndex(indices);
     geom.computeVertexNormals();
 
-    // Material físico del cristal: alta transmisión, transparencia y reflejos especulares
-    this.lensMaterial = new THREE.MeshPhysicalMaterial({
+    // Material exclusivo de los cristales: SOLO EL COLOR, SIN DESLUMBRAMIENTO NI HAZES DE LUZ
+    this.lensMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color(0x38bdf8),
-      metalness: 0.05,
-      roughness: 0.08,
-      transmission: 0.85,
-      thickness: 0.35,
       transparent: true,
-      opacity: 0.22,
-      reflectivity: 0.65,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.06,
+      opacity: 0.18,
       side: THREE.DoubleSide,
       depthWrite: false
     });
@@ -236,7 +229,7 @@ export class Avatar3DEngine {
 
   /**
    * Actualiza el tinte ÚNICAMENTE en el cristal del lente (this.lensMaterial),
-   * garantizando que el marco jamás cambie de color.
+   * mostrando el color solo, sin reflejos ni haces de luz.
    */
   updateGlassesTint(lens, absorption) {
     if (!this.lensMaterial || !lens) return;
@@ -244,24 +237,14 @@ export class Avatar3DEngine {
     const [r, g, b] = lens.tintRgb;
     const material = this.lensMaterial;
 
-    // Actualizar tono cromático del cristal
+    // Actualizar tono cromático puro del cristal (sin luces especulares ni reflejos)
     material.color.setRGB(r / 255, g / 255, b / 255);
 
-    // Ajustar opacidad según la cinética de absorción
-    const targetOpacity = Math.max(0.18, Math.min(0.92, absorption * 0.95));
+    // Ajustar opacidad según la cinética de absorción:
+    // En interiores/claro: opacidad suave 0.16 para que se vean los ojos con claridad
+    // En exteriores/oscuro: opacidad hasta 0.86 con el color uniforme de la lente
+    const targetOpacity = Math.max(0.16, Math.min(0.86, absorption * 0.90));
     material.opacity = targetOpacity;
-    material.transmission = Math.max(0.06, 1.0 - (absorption * 0.88));
-
-    // Efecto espejo fotoprotector (Style Mirrors)
-    if (lens.mirrorEffect) {
-      material.metalness = 0.85;
-      material.roughness = 0.06;
-      material.reflectivity = 0.95;
-    } else {
-      material.metalness = 0.05;
-      material.roughness = 0.08;
-      material.reflectivity = 0.65;
-    }
   }
 
   bindEvents() {

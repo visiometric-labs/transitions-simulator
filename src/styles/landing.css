@@ -13,6 +13,22 @@
   justify-content: space-between;
   padding: 24px 36px 18px 36px;
   overflow: hidden;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s ease, visibility 0.35s ease;
+}
+
+/* Ocultar portada al iniciar la simulación */
+.landing-overlay.screen-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: scale(1.03);
+}
+
+.landing-overlay.screen-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: scale(1);
 }
 
 /* Retículas ópticas / Radar de fondo */
@@ -143,7 +159,7 @@
   50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-/* Paneles Laterales Informativos (Reemplazo de los sliders inertes) */
+/* Paneles Laterales Informativos */
 .landing-info-card {
   position: absolute;
   top: 50%;
@@ -384,7 +400,7 @@
   opacity: 0.75;
 }
 
-/* Ajustes Responsive para Pantallas Medianas y Pequeñas */
+/* Ajustes Responsive */
 @media (max-width: 1180px) {
   .landing-info-card {
     width: 240px;

@@ -228,23 +228,49 @@ export class LandingScreen {
 
     eventBus.on('screen:change', ({ screen }) => {
       if (screen === 'landing') {
-        this.element.classList.remove('screen-hidden');
-        this.element.classList.add('screen-visible');
+        this.element.style.display = 'flex';
+        this.element.style.pointerEvents = 'auto';
+        requestAnimationFrame(() => {
+          this.element.classList.remove('screen-hidden');
+          this.element.classList.add('screen-visible');
+        });
         updateFsVisibility();
       } else {
         this.element.classList.remove('screen-visible');
         this.element.classList.add('screen-hidden');
+        this.element.style.pointerEvents = 'none';
+        setTimeout(() => {
+          if (simulatorState.screen !== 'landing') {
+            this.element.style.display = 'none';
+          }
+        }, 360);
       }
     });
   }
 
   handleStartExperience() {
+    // 1. Inmediatamente desactivar puntero y animar desvanecimiento
+    this.element.classList.remove('screen-visible');
+    this.element.classList.add('screen-hidden');
+    this.element.style.pointerEvents = 'none';
+
+    // 2. Transición a pantalla completa si es compatible
     if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
     }
 
+    // 3. Sonido sutil de entrada
     this.playStartChime();
+
+    // 4. Cambiar estado a experiencia en el simulador
     simulatorState.setScreen('experience');
+
+    // 5. Ocultar completamente del DOM tras la animación
+    setTimeout(() => {
+      if (simulatorState.screen === 'experience') {
+        this.element.style.display = 'none';
+      }
+    }, 360);
   }
 
   playStartChime() {
