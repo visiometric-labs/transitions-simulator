@@ -1,10 +1,12 @@
 import { eventBus } from '../core/event-bus.js';
 import { simulatorState } from '../core/simulator-state.js';
+import { Avatar3DEngine } from '../core/avatar-3d-engine.js';
 
 export class LandingScreen {
   constructor(containerElement) {
     this.container = containerElement;
     this.element = null;
+    this.heroAvatar3D = null;
     this.render();
     this.bindEvents();
   }
@@ -101,31 +103,9 @@ export class LandingScreen {
         </div>
       </aside>
 
-      <!-- Avatar Hero Central (Fondo transparente + Animación interactiva estilo My Talking Cat) -->
-      <div class="landing-hero-center">
-        <div id="landing-avatar-body" class="landing-avatar-body" title="¡Haz clic en el avatar para interactuar!">
-          <img class="landing-avatar-image" src="./avatar/avatar-hero.png" alt="Avatar Luminix" />
-          
-          <!-- Capa SVG que tiñe ÚNICAMENTE los cristales de las gafas -->
-          <svg class="landing-avatar-lens-overlay" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <clipPath id="hero-spectacle-lenses">
-                <!-- Lente Izquierdo del Avatar -->
-                <ellipse cx="415" cy="445" rx="72" ry="54" />
-                <!-- Lente Derecho del Avatar -->
-                <ellipse cx="612" cy="445" rx="72" ry="54" />
-              </clipPath>
-            </defs>
-            <g clip-path="url(#hero-spectacle-lenses)">
-              <rect id="hero-lens-tint" x="0" y="0" width="1024" height="1024" 
-                    fill="rgb(110, 45, 190)" 
-                    style="mix-blend-mode: multiply; opacity: 0.12; transition: opacity 0.3s ease, fill 0.3s ease;" />
-              <rect id="hero-lens-glare" x="0" y="0" width="1024" height="1024" 
-                    fill="url(#cyanCurveGrad)" 
-                    style="mix-blend-mode: screen; opacity: 0.08;" />
-            </g>
-          </svg>
-        </div>
+      <!-- Avatar Hero Central (3D Real con Three.js y esqueleto .glb interactivo) -->
+      <div id="landing-hero-stage" class="landing-hero-center">
+        <!-- Canvas 3D de Three.js montado dinámicamente -->
       </div>
 
       <!-- Pie de Página y Botón CTA Central -->
@@ -149,6 +129,16 @@ export class LandingScreen {
     `;
 
     this.container.appendChild(this.element);
+
+    // Inicializar Avatar 3D Hero
+    const heroStage = this.element.querySelector('#landing-hero-stage');
+    this.heroAvatar3D = new Avatar3DEngine(heroStage, {
+      isHero: true,
+      cameraFov: 23,
+      cameraY: 1.62,
+      cameraZ: 1.35,
+      targetY: 1.58
+    });
   }
 
   bindEvents() {
@@ -156,7 +146,6 @@ export class LandingScreen {
     const fsBtn = this.element.querySelector('#btn-landing-fullscreen');
     const iconEnter = fsBtn.querySelector('.fs-icon-enter');
     const iconExit = fsBtn.querySelector('.fs-icon-exit');
-    const avatarBody = this.element.querySelector('#landing-avatar-body');
     const yearEl = this.element.querySelector('#copyright-year');
 
     if (yearEl) {
@@ -189,23 +178,6 @@ export class LandingScreen {
 
     document.addEventListener('fullscreenchange', updateFsIcon);
 
-    // Movimiento Interactivo tipo "Talking Cat" con seguimiento de mirada y cursor
-    window.addEventListener('mousemove', (e) => {
-      if (simulatorState.screen !== 'landing') return;
-      const xNorm = (e.clientX / window.innerWidth) - 0.5;
-      const yNorm = (e.clientY / window.innerHeight) - 0.5;
-      
-      const rotY = xNorm * 12; // Giro sutil hacia el cursor
-      const rotX = -yNorm * 8; // Inclinación hacia arriba/abajo
-      
-      avatarBody.style.transform = `perspective(600px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
-    }, { passive: true });
-
-    // Clic interactivo en el Avatar (Reacción divertida con audio)
-    avatarBody.addEventListener('click', () => {
-      this.playAvatarPokeReaction(avatarBody);
-    });
-
     eventBus.on('screen:change', ({ screen }) => {
       if (screen === 'landing') {
         this.element.classList.remove('screen-hidden');
@@ -216,46 +188,6 @@ export class LandingScreen {
         this.element.classList.add('screen-hidden');
       }
     });
-
-    // Sincronizar tinte de los lentes en el avatar si se prueba lente
-    eventBus.on('kinetic:update', ({ absorption, lens }) => {
-      const heroTint = this.element.querySelector('#hero-lens-tint');
-      if (heroTint && lens) {
-        const [r, g, b] = lens.tintRgb;
-        heroTint.setAttribute('fill', `rgb(${r}, ${g}, ${b})`);
-        heroTint.style.opacity = (Math.max(0.12, absorption * 0.70)).toFixed(2);
-      }
-    });
-  }
-
-  playAvatarPokeReaction(avatarEl) {
-    // Animación de sorpresa/salto estilo Talking Cat
-    avatarEl.style.transform = 'perspective(600px) translateY(-18px) scale(1.05)';
-    setTimeout(() => {
-      avatarEl.style.transform = 'perspective(600px) translateY(0px) scale(1)';
-    }, 280);
-
-    // Audio de risa / alegría sintetizada
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(720, audioCtx.currentTime + 0.15);
-      osc.frequency.exponentialRampToValueAtTime(560, audioCtx.currentTime + 0.30);
-
-      gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.16, audioCtx.currentTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.36);
-    } catch {}
   }
 
   handleStartExperience() {
