@@ -94,7 +94,7 @@
   pointer-events: none;
 }
 
-/* Capa POV de Gafas Oftálmicas */
+/* Capa POV de Gafas Oftálmicas con interacción a voluntad del paciente */
 .glasses-pov-layer {
   position: absolute;
   top: 0;
@@ -102,8 +102,16 @@
   width: 100%;
   height: 100%;
   z-index: 5;
-  pointer-events: none;
+  pointer-events: auto;
   overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.glasses-pov-layer.is-dragging {
+  cursor: grabbing;
 }
 
 /* Capa de Interfaz y HUD interactivo */
@@ -142,17 +150,17 @@
   width: 100%;
 }
 
-/* Pill Guía flotante para invitar al paciente a mover la vista */
+/* Pill Guía flotante para invitar al paciente a mover la vista a voluntad */
 .pov-gaze-hint-pill {
   position: absolute;
-  top: 88px;
+  top: 86px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 18px;
-  background: rgba(15, 23, 42, 0.78);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(56, 189, 248, 0.35);
   border-radius: 30px;
@@ -163,7 +171,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.2);
   z-index: 25;
   pointer-events: none;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .pov-gaze-hint-pill.hint-hidden {
@@ -179,6 +187,48 @@
   background: #38BDF8;
   box-shadow: 0 0 8px #38BDF8;
   animation: pulse-hint 1.8s infinite ease-in-out;
+}
+
+/* Botón flotante para recentrar la mirada a voluntad */
+.btn-recenter-pill {
+  position: absolute;
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 20px;
+  color: #38BDF8;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 12px rgba(56, 189, 248, 0.25);
+  z-index: 26;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.btn-recenter-pill.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.btn-recenter-pill:hover {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: #38BDF8;
+  color: #FFFFFF;
+  transform: translateX(-50%) scale(1.05);
+}
+
+.btn-recenter-pill:active {
+  transform: translateX(-50%) scale(0.96);
 }
 
 @keyframes pulse-hint {

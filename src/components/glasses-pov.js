@@ -37,8 +37,17 @@ export class GlassesPOV {
       <!-- Guía Visual Flotante para Paciente -->
       <div id="pov-gaze-hint" class="pov-gaze-hint-pill">
         <span class="pov-gaze-hint-dot"></span>
-        <span>Mueve el cursor o arrastra para comparar la visión por fuera y a través de las gafas</span>
+        <span>Arrastra la pantalla para mover la vista a voluntad y comparar con/sin gafas</span>
       </div>
+
+      <!-- Botón Flotante para Recentrar la Mirada a Voluntad -->
+      <button id="btn-recenter-gaze" class="btn-recenter-pill" type="button" title="Centrar mirada en primera persona">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M3 12h3M18 12h3M12 3v3M12 18v3"/>
+        </svg>
+        <span>Centrar vista</span>
+      </button>
 
       <svg id="glasses-pov-svg" width="100%" height="100%" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -311,37 +320,70 @@ export class GlassesPOV {
       }
     });
 
-    // Control de mirada interactiva con ratón
-    window.addEventListener('mousemove', (e) => {
-      if (simulatorState.screen !== 'experience') return;
-      // Coordenadas normalizadas [-1, 1]
-      this.targetGazeX = (e.clientX / window.innerWidth - 0.5) * 2;
-      this.targetGazeY = (e.clientY / window.innerHeight - 0.5) * 2;
-      this.hideHintPill();
-    }, { passive: true });
+    // Filtro para ignorar toques/clics sobre botones o tarjetas interactivas
+    const isInteractiveUI = (target) => {
+      if (!target || !target.closest) return false;
+      return !!target.closest('button, input, a, .lens-selector-card, .brand-badge, .hud-actions-right, .avatar-widget-card, .landing-overlay, .btn-recenter-pill');
+    };
 
-    // Control táctil / arrastre directo
-    window.addEventListener('pointerdown', (e) => {
+    // Control de mirada 100% a voluntad del paciente (Arrastrar intencionalmente)
+    this.element.addEventListener('pointerdown', (e) => {
       if (simulatorState.screen !== 'experience') return;
+      if (isInteractiveUI(e.target)) return;
+
       this.isDragging = true;
       this.startX = e.clientX;
       this.startY = e.clientY;
+      this.element.classList.add('is-dragging');
       this.hideHintPill();
+
+      try {
+        this.element.setPointerCapture(e.pointerId);
+      } catch {}
     });
 
-    window.addEventListener('pointermove', (e) => {
+    this.element.addEventListener('pointermove', (e) => {
       if (simulatorState.screen !== 'experience' || !this.isDragging) return;
-      const dx = (e.clientX - this.startX) / (window.innerWidth * 0.35);
-      const dy = (e.clientY - this.startY) / (window.innerHeight * 0.35);
-      this.targetGazeX = Math.max(-1, Math.min(1, this.targetGazeX + dx));
-      this.targetGazeY = Math.max(-1, Math.min(1, this.targetGazeY + dy));
+
+      const deltaX = (e.clientX - this.startX) / (window.innerWidth * 0.38);
+      const deltaY = (e.clientY - this.startY) / (window.innerHeight * 0.38);
       this.startX = e.clientX;
       this.startY = e.clientY;
+
+      // Actualizar posición de mirada deseada por el paciente
+      this.targetGazeX = Math.max(-1, Math.min(1, this.targetGazeX + deltaX));
+      this.targetGazeY = Math.max(-1, Math.min(1, this.targetGazeY + deltaY));
     });
 
-    window.addEventListener('pointerup', () => {
-      this.isDragging = false;
+    const onPointerEnd = (e) => {
+      if (this.isDragging) {
+        this.isDragging = false;
+        this.element.classList.remove('is-dragging');
+        try {
+          this.element.releasePointerCapture(e.pointerId);
+        } catch {}
+      }
+    };
+
+    this.element.addEventListener('pointerup', onPointerEnd);
+    this.element.addEventListener('pointercancel', onPointerEnd);
+
+    // Doble clic para centrar la mirada de inmediato
+    this.element.addEventListener('dblclick', (e) => {
+      if (isInteractiveUI(e.target)) return;
+      this.targetGazeX = 0;
+      this.targetGazeY = 0;
     });
+
+    // Botón flotante para recentrar la mirada
+    const recenterBtn = this.element.querySelector('#btn-recenter-gaze');
+    if (recenterBtn) {
+      recenterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.targetGazeX = 0;
+        this.targetGazeY = 0;
+      });
+    }
 
     // Ocultar hint pill automáticamente tras 6 segundos
     setTimeout(() => {
@@ -360,25 +402,32 @@ export class GlassesPOV {
 
   /**
    * Bucle a 60 FPS con interpolación cinemática suave para la mirada del paciente:
-   * Permite mirar por encima de las gafas (hacia el sol deslumbrante),
-   * por debajo, o a través del centro protegido de los cristales.
+   * Solo se mueve cuando el paciente arrastra la vista a voluntad.
    */
   startGazeLoop() {
+    const recenterBtn = this.element.querySelector('#btn-recenter-gaze');
+
     const loop = () => {
       if (simulatorState.screen === 'experience') {
         // Interpolación amortiguada continua (lerp)
         this.currentGazeX += (this.targetGazeX - this.currentGazeX) * 0.08;
         this.currentGazeY += (this.targetGazeY - this.currentGazeY) * 0.08;
 
-        // Emitir posición de mirada para sincronizar el fondo deslumbrante
+        // Mostrar u ocultar botón de recentrado según el desplazamiento
+        if (recenterBtn) {
+          const isDisplaced = Math.abs(this.currentGazeX) > 0.16 || Math.abs(this.currentGazeY) > 0.16;
+          recenterBtn.classList.toggle('visible', isDisplaced);
+        }
+
+        // Emitir posición de mirada para sincronizar el fondo panorámico
         eventBus.emit('gaze:update', {
           gazeX: this.currentGazeX,
           gazeY: this.currentGazeY
         });
 
         // Articular las gafas en primera persona:
-        // Cuando mira arriba (gazeY < 0), la línea de vista se eleva por encima del marco (glassesOffsetY > 0)
-        // para mirar directamente al sol deslumbrante con el ojo al descubierto.
+        // Cuando el paciente mira arriba (gazeY < 0), la línea de vista se eleva por encima del marco (glassesOffsetY > 0)
+        // para mirar directamente por encima de las gafas a voluntad.
         const glassesOffsetY = -this.currentGazeY * 115;
         const glassesOffsetX = this.currentGazeX * 45;
         const glassesRotate = this.currentGazeX * 1.6;
@@ -391,8 +440,8 @@ export class GlassesPOV {
         }
 
         // Sincronizar las imágenes dentro de los cristales para que coincidan con las coordenadas del mundo
-        const imgOffsetX = (-this.currentGazeX * 90 - glassesOffsetX) * 0.72;
-        const imgOffsetY = (-this.currentGazeY * 65 - glassesOffsetY) * 0.72;
+        const imgOffsetX = (-this.currentGazeX * 85 - glassesOffsetX) * 0.72;
+        const imgOffsetY = (-this.currentGazeY * 60 - glassesOffsetY) * 0.72;
 
         this.allSceneImages.forEach(img => {
           if (img) {
