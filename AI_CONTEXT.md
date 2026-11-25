@@ -66,19 +66,54 @@ En la carpeta `docs/mockups/` se encuentran los dos diseños de referencia aprob
 ---
 
 ## 👤 5. Especificaciones del Avatar 3D
-* **Plataforma de generación del modelo:** [Ready Player Me](https://readyplayer.me)
-* **Formato:** Archivo `.glb` estándar con huesos humanoides y blendshapes ARKit.
-* **Animaciones corporales:** Mixamo Rig (animación de aplauso `clapping`, `idle` con respiración, `cheering`).
-* **Micro-expresiones continuas:**
-  - Parpadeo aleatorio (`eyeBlinkLeft`, `eyeBlinkRight`) cada 3-5s.
-  - Sonrisa / Alegría (`mouthSmileLeft`, `mouthSmileRight`).
-  - Cara de sorpresa / Asombro (`browInnerUp`, `jawOpen`).
-* **Montura de las gafas:** Gafas 3D vinculadas al hueso `Head` del esqueleto, con cristales PBR cuyo color, opacidad y reflectividad se actualizan con el estado global de la simulación.
+* **Plataformas de referencia evaluadas:** Ready Player Me y Hyper3D (ChatAvatar).
+* **Formato:** Archivo estático y/o `.glb` con blendshapes ARKit.
+* **Comportamiento en la aplicación:**
+  - En Portada: Renderizado hero en primer plano centrado con micro-animación de respiración viva.
+  - En Cabina: Widget en esquina inferior derecha como mini-espejo en tiempo real con tintado dinámico sincronizado y reacciones de aplauso (`clapping`) al activar lentes.
 
 ---
 
-## 🛠️ 6. Stack Tecnológico Previsto para el Desarrollo
+## 🛠️ 6. Stack Tecnológico
 * **Bundler & Dev Server:** Vite (`npm run dev`, `npm run build`).
-* **Motor 3D:** Three.js (`GLTFLoader`, `AnimationMixer`).
-* **Estilos:** CSS Modular con estética *Dark Glass Cyber-Clínica* (`#070B14`, microbordes traslúcidos `rgba(255,255,255,0.08)`, tipografía sans-serif de alta nitidez).
-* **Gestor de Estado:** Máquina de estados desacoplada / Bus de eventos.
+* **Estilos:** CSS Modular con estética *Dark Glass Cyber-Clínica* (`#070B14`, microbordes traslúcidos `rgba(255,255,255,0.08)`, tipografía sans-serif de alta nitidez *Plus Jakarta Sans*).
+* **Gestor de Estado y Cinemática:** Motor desacoplado a 60 FPS con EventBus.
+
+---
+
+## 🚀 7. Estado Actual de la Implementación (Progreso Registrado)
+
+A fecha de hoy, la base de la aplicación se encuentra **100% funcional, compilada y probada**:
+
+1. **Entorno Base y Configuración:**
+   - `package.json`, `vite.config.js` e `index.html` configurados.
+   - Soporte para base path dinámico (`/transitions-simulator/` en GitHub Pages).
+2. **Escenas y Recursos Visuales:**
+   - `public/scenes/parque-familiar.jpg`: Parque exterior soleado de alta resolución (UV 9.2).
+   - `public/scenes/museo-arte.jpg`: Museo interior arquitectónico con luz tenue (UV 0.1).
+   - `public/avatar/avatar-hero.jpg` y `public/avatar/avatar-clapping.jpg`: Modelos del avatar hero y aplauso.
+   - `public/branding/favicon.svg` y `public/manifest.json`.
+3. **Núcleo Lógico y Datos Clínicos:**
+   - `src/core/event-bus.js`: Sistema de eventos desacoplado (`on`, `off`, `emit`).
+   - `src/core/lenses-data.js`: Definición de las 4 familias tecnológicas (Gen S, XTRActive, Mirrors, Generic) con coeficientes de absorción, RGBs de tinte y velocidades de activación.
+   - `src/core/simulator-state.js`: Estado reactivo global, persistencia de lente entre escenas y temporizador modo Kiosco (5 min).
+   - `src/core/kinetic-engine.js`: Motor de cálculo cinético continuo a 60 FPS para absorción e índice UV.
+4. **Visor POV y Escenas:**
+   - `src/scenes/scene-manager.js`: Transición crossfade entre Parque y Museo con resplandor periférico de sol directo.
+   - `src/components/glasses-pov.js`: Montura Wayfarer vectorial con cristales independientes (máscaras clipPath SVG), atenuación fotópica, tinte multiplicativo, destello espejo y micro-paralaje al mover el cursor.
+5. **Componentes HUD y Cyber-Glass:**
+   - `src/components/landing-screen.js`: Portada Hero con avatar grande, retículas, gráficos de curva, y botón CTA neón con fullscreen.
+   - `src/components/hud-header.js`: Cabecera con branding, medidor dinámico read-only de absorción/categoría (`88% Absorción - Cat. 3 Sol Intenso`) y conmutador de escenas.
+   - `src/components/lens-selector.js`: Selector lateral por familias morada, ámbar, azul y gris.
+   - `src/components/avatar-widget.js`: Mini-espejo reactivo con tintado sincronizado y aplausos.
+6. **Compilación de Producción:**
+   - Verificada exitosamente con `npx vite build --base=/transitions-simulator/` en 363ms.
+
+---
+
+## 📋 8. Próximos Pasos para la Siguiente Sesión
+
+1. **Revisión y feedback del usuario** sobre la estética y tiempos cinéticos.
+2. **Opcional - Importación de modelo `.glb` con Three.js:** Si el usuario descarga un avatar 3D `.glb` desde Ready Player Me o Hyper3D, se puede sustituir la capa de imagen reactiva por un canvas Three.js con `GLTFLoader` y animación esquelética.
+3. **Pruebas en dispositivo táctil / tablet de consulta optométrica.**
+4. **Merge a `main`:** Cuando el usuario dé el visto bueno final, combinar de `dev` a `main` para despliegue automático en GitHub Pages.

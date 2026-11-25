@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Luminix™ by Visiometric Labs | Simulador de Lentes Fotosensibles y Transitions®</title>
+  <meta name="description" content="Simulador clínico interactivo y probador virtual en primera persona de tecnología fotosensible Transitions® (Signature Gen S, XTRActive, Style Mirrors) con avatar reactivo en tiempo real.">
+
+  <!-- Favicons Profesionales -->
+  <link rel="icon" type="image/svg+xml" href="./branding/favicon.svg">
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Integración Móvil & Barra de Navegador Nativa -->
+  <meta name="theme-color" content="#070B14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Luminix">
+
+  <!-- Tipografía Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Pre-carga de Fondos y Recursos Visuales Críticos -->
+  <link rel="preload" as="image" href="./scenes/parque-familiar.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="./scenes/museo-arte.jpg">
+  <link rel="preload" as="image" href="./avatar/avatar-hero.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="./avatar/avatar-clapping.jpg">
+</head>
+<body>
+  <!-- Contenedor Raíz de la Aplicación -->
+  <div id="app-container"></div>
+
+  <!-- Punto de Entrada Principal -->
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+/* Layout maestro para Luminix */
+
+#app-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+/* Capa de Escena Panorámica de Fondo */
+.scene-background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.8s ease-in-out, filter 0.8s ease;
+  pointer-events: none;
+}
+
+/* Capa POV de Gafas Oftálmicas */
+.glasses-pov-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Capa de Interfaz y HUD interactivo */
+.ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 32px;
+}
+
+.ui-layer * {
+  pointer-events: auto;
+}
+
+/* Header superior con Logo, Medidor y Conmutador */
+.hud-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 25;
+}
+
+/* Área central / inferior con selectores y widget de avatar */
+.hud-body-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 25;
+}
+
+/* Transición cinematográfica entre pantallas */
+.screen-fade {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.screen-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.98);
+}
+
+.screen-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}

@@ -1,0 +1,78 @@
+:root {
+  /* Paleta Base Dark Cyber-Glass */
+  --bg-primary: #070B14;
+  --bg-secondary: #0A101D;
+  --bg-surface: rgba(10, 16, 29, 0.72);
+  --bg-glass: rgba(15, 23, 42, 0.65);
+  --bg-glass-subtle: rgba(255, 255, 255, 0.04);
+  --bg-glass-hover: rgba(255, 255, 255, 0.08);
+  --bg-glass-active: rgba(255, 255, 255, 0.12);
+
+  /* Bordes de precisión translúcidos */
+  --border-glass: rgba(255, 255, 255, 0.10);
+  --border-glass-light: rgba(255, 255, 255, 0.18);
+  --border-glow-cyan: rgba(56, 189, 248, 0.35);
+
+  /* Texto y Contraste */
+  --text-main: #FFFFFF;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+  --text-accent: #38BDF8;
+
+  /* Colores de Familias Oftálmicas */
+  --family-gens: #A855F7;
+  --family-gens-glow: rgba(168, 85, 247, 0.4);
+  --family-gens-bg: rgba(168, 85, 247, 0.12);
+
+  --family-xtractive: #F59E0B;
+  --family-xtractive-glow: rgba(245, 158, 11, 0.4);
+  --family-xtractive-bg: rgba(245, 158, 11, 0.12);
+
+  --family-mirrors: #0EA5E9;
+  --family-mirrors-glow: rgba(14, 165, 233, 0.4);
+  --family-mirrors-bg: rgba(14, 165, 233, 0.12);
+
+  --family-generic: #94A3B8;
+  --family-generic-glow: rgba(148, 163, 184, 0.3);
+  --family-generic-bg: rgba(148, 163, 184, 0.10);
+
+  /* Sombras y Luces */
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-glow-cyan: 0 0 24px rgba(56, 189, 248, 0.28);
+  --shadow-glow-orange: 0 0 24px rgba(245, 158, 11, 0.30);
+  --shadow-card: 0 12px 40px -10px rgba(0, 0, 0, 0.55);
+
+  /* Tipografía */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.18s ease-out;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Efecto Frosted Glass universal */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  box-shadow: var(--shadow-glass);
+}

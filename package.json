@@ -1,0 +1,21 @@
+{
+  "name": "luminix",
+  "displayName": "Luminix by Visiometric Labs",
+  "description": "Simulador interactivo y probador clínico de lentes fotosensibles y tecnología Transitions® con avatar 3D reactivo en tiempo real",
+  "author": "JayzirTech",
+  "license": "UNLICENSED",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  }
+}

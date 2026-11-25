@@ -1,0 +1,265 @@
+/* Estilos específicos de la Portada / Landing Screen */
+
+.landing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background: radial-gradient(circle at center, #0F172A 0%, #070B14 75%, #030712 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 48px;
+  overflow: hidden;
+}
+
+/* Retículas ópticas / Radar de fondo */
+.landing-bg-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 720px;
+  height: 720px;
+  pointer-events: none;
+  opacity: 0.22;
+  z-index: 1;
+}
+
+/* Cabecera Landing */
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 10;
+}
+
+.landing-brand-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 24px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow-glass);
+}
+
+.landing-brand-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-brand-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+
+.landing-brand-sub {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #7DD3FC;
+  letter-spacing: 0.04em;
+}
+
+/* Indicadores laterales HUD en Landing */
+.landing-side-hud-left,
+.landing-side-hud-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.landing-side-hud-left {
+  left: 48px;
+}
+
+.landing-side-hud-right {
+  right: 48px;
+}
+
+.hud-slider-widget {
+  width: 58px;
+  height: 260px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 10px;
+}
+
+.hud-slider-track {
+  width: 4px;
+  height: 160px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  position: relative;
+}
+
+.hud-slider-thumb {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 10px #38BDF8;
+}
+
+.hud-slider-thumb.amber {
+  background: #F59E0B;
+  box-shadow: 0 0 10px #F59E0B;
+}
+
+.hud-curve-card {
+  width: 130px;
+  height: 80px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Avatar Hero Central */
+.landing-hero-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 540px;
+  height: 540px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.landing-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.85));
+  animation: avatar-float 5s infinite ease-in-out;
+}
+
+@keyframes avatar-float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.015);
+  }
+}
+
+/* Footer y Botón CTA Central */
+.landing-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  z-index: 20;
+}
+
+.cta-button-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 44px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(24px);
+  border: 2px solid transparent;
+  border-radius: 40px;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), 0 8px 30px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
+}
+
+/* Borde Neón Animado */
+.cta-button-main::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  background: linear-gradient(90deg, #38BDF8, #818CF8, #F59E0B, #38BDF8);
+  border-radius: 42px;
+  z-index: -1;
+  background-size: 300% 300%;
+  animation: border-glow-spin 4s linear infinite;
+}
+
+@keyframes border-glow-spin {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.cta-button-main:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 45px rgba(56, 189, 248, 0.55), 0 12px 35px rgba(0, 0, 0, 0.6);
+}
+
+.cta-button-main:active {
+  transform: scale(0.98);
+}
+
+.cta-icon-box {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38BDF8;
+}
+
+.cta-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.cta-subtitle {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}

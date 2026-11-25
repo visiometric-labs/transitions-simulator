@@ -1,0 +1,18 @@
+{
+  "name": "Luminix by Visiometric Labs",
+  "short_name": "Luminix",
+  "description": "Simulador interactivo y probador clínico de lentes fotosensibles y tecnología Transitions®",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#070B14",
+  "theme_color": "#070B14",
+  "icons": [
+    {
+      "src": "./branding/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
