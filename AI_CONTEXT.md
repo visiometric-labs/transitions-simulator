@@ -11,9 +11,10 @@
 * **Autor / Propietario:** JayzirTech
 * **Carpeta Local del Proyecto:** `transitions-simulator`
 * **Repositorio Remoto en GitHub:** `https://github.com/visiometric-labs/transitions-simulator.git`
+* **URL en Producción (GitHub Pages):** `https://visiometric-labs.github.io/transitions-simulator/`
 * **Ecosistema de Hermanos:**
-  - `filters-simulator` -> **Chromatis** (Simulador clínico de filtros oftálmicos: Blue Cut, Conducción, Antirreflejo)
-  - `refraction-simulator` -> **Ocularis** (Simulador clínico de refracción óptica, patologías y anatomía)
+  - `filters-simulator` -> **Chromatis** (Simulador clínico de tratamientos ópticos: Blue Cut, Conducción, Crizal Antirreflejo)
+  - `refraction-simulator` -> **Ocularis** (Simulador clínico de refracción óptica, patologías y anatomía ocular)
   - `transitions-simulator` -> **Luminix** (Simulador y probador virtual de lentes fotosensibles y tecnología Transitions)
 
 ---
@@ -24,100 +25,75 @@
 * **Rama de Producción:** **`main`**
   - Reservada exclusivamente para versiones estables.
   - El flujo `.github/workflows/deploy.yml` compila con `vite build --base=/transitions-simulator/` y despliega automáticamente en **GitHub Pages** únicamente cuando se hace push a `main`.
-* **Regla de Oro:** **NUNCA** desarrollar directamente sobre `main` sin pasar por `dev`.
+* **Regla de Oro:** **NUNCA** desarrollar directamente sobre `main` sin pasar por `dev`. Una vez probado en `dev`, se fusiona en `main` y se empuja a `origin/main`.
 
 ---
 
-## 🎨 3. Arquitectura Visual y Referencias Mockup
-En la carpeta `docs/mockups/` se encuentran los dos diseños de referencia aprobados:
+## 🔬 3. Arquitectura Implementada y Estado Actual
 
-1. **`docs/mockups/portada-landing-mockup.jpg` (Portada / Bienvenida):**
-   - **Avatar Hero:** Avatar 3D en **primer plano grande**, centrado y expresivo.
-   - **Gafas reactivas:** Lleva puestas las gafas con tintado fotosensible.
-   - **Micro-expresiones vivas:** Pestañeo aleatorio, sonrisa, asombro.
-   - **Branding:** "Luminix by Visiometric Labs" en cabecera izquierda.
-   - **Botón Central CTA:** "INICIAR EXPERIENCIA" (lanza la pantalla completa nativa y pasa a la cabina).
+A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico completamente operativa:
 
-2. **`docs/mockups/interfaz-experiencia-mockup.jpg` (Cabina de Simulación):**
-   - **Visión Principal 1ra Persona (POV):** Visión en primera persona a través de la montura hacia la escena activa. El interior del lente atenúa la luz con el tinte activo, mientras que fuera del marco la visión periférica es clara.
-   - **Selector Lateral Izquierdo por Familias de Color:**
-     - 🟣 **Signature Gen S:** Botones morados.
-     - 🟠 **XTRActive:** Botones ámbar/dorados.
-     - 🔵 **Style Mirrors:** Botones azul zafiro eléctrico.
-     - ⚪ **Standard Generic (Trinity):** Botón gris platino neutro.
-   - **Avatar Mediano Integrado (Esquina inferior derecha):** El avatar que estaba grande en la portada se encoge suavemente y se aloja en una tarjeta de vidrio translúcido en tamaño mediano, portando las mismas gafas y haciendo expresiones continuas y aplausos.
-   - **Medidor Superior de Intensidad (Read-Only):** Barra/HUD que indica la absorción solar (ej: `88% Absorción - Cat. 3 Sol Intenso`) y el índice UV (ej: `UV 9.2`). **NO es arrastrable ni modificable por el usuario; varía automáticamente.**
-   - **Conmutador de Escenas (Superior derecha):** Píldora para alternar entre "Parque Familiar" y "Museo de Arte".
+### A. Motor Óptico de Primera Persona (POV) con Capas de Deslumbramiento
+* Archivos: `src/components/glasses-pov.js`, `src/scenes/scene-manager.js`, `src/styles/layout.css`.
+* **Visión al Descubierto (Sin Gafas)**:
+  - 4 capas graduadas: Base fotográfica sobreexpuesta (50,000+ lux), Bloom corneal (`mix-blend-mode: screen`), Puntos calientes especulares (`mix-blend-mode: color-dodge`) y Velo solar cegador con rayos volumétricos y destellos anamórficos.
+* **Visión a Través del Cristal (Transitions®)**:
+  - Totalmente libre de deslumbramiento, luminosidad relajada (0.70 a 0.86), contraste optimizado (1.20) y saturación viva.
+  - Tintado multiply suave con el color auténtico de la familia seleccionada (Signature Gen S, XTRActive, Style Mirrors, Estándar).
+* **Navegación Interactiva de la Mirada (Gaze POV)**:
+  - Al inclinar la vista hacia arriba (`gazeY < 0`), el usuario mira **directamente por encima de las gafas** hacia el sol cegador.
+  - Al regresar al centro, el usuario experimenta el alivio inmediato del lente.
+  - Sincronización de coordenadas con paralaje dinámico entre fondo panorámico y los cristales.
 
----
+### B. Avatar 3D Real (Three.js + GLTF + WebGL)
+* Archivo: `src/core/avatar-3d-engine.js`.
+* **Modelo 3D:** `public/avatar/avatar.glb` con esqueleto óseo, blendshapes faciales y materiales PBR.
+* **Comportamiento Autónomo:**
+  - Máquina de estados autónoma (no sigue el cursor): mirar al frente es la orientación predominante y de mayor duración (~70% del tiempo), con giros sutiles aleatorios y parpadeo involuntario fisiológico.
+* **Separación de Marco vs. Cristal:**
+  - `Wolf3D_Glasses` (el marco) mantiene un material de acetato negro mate/satinado (`#181e28`) que **jamás cambia de color**.
+  - Cristales independientes (`THREE.SkinnedMesh` con `MeshPhysicalMaterial`) articulados con el hueso de la cabeza, sobre los cuales se modula exclusivamente la absorción, color, opacidad y reflejo espejo.
 
-## ⚙️ 4. Reglas de Negocio y Lógica Clínica
+### C. Escenarios y Transición Sincronizada
+* **Parque Familiar:** Exteriores a mediodía, UV 9.2, activación cinética rápida (~25 s).
+* **Museo de Arte:** Interiores con luz artificial suave, UV 0.1, aclarado acelerado.
+* **Transición de 200 ms:** Tanto el fondo como el interior de los cristales binoculares realizan una progresión sincronizada de 200 ms.
 
-1. **Las 2 Escenas Fijas:**
-   - **Escena 1: Parque Familiar (Exterior Soleado):** Alta radiación UV. Provoca oscurecimiento solar cinético en tiempo real (~3 a 3.5 segundos).
-   - **Escena 2: Dentro de un Museo (Interior Tenue):** Ausencia de UV. Provoca aclarado progresivo (*fade-back*) a transparente.
-2. **Persistencia del Lente entre Escenas:**
-   - Al conmutar de Parque a Museo o viceversa, **el lente seleccionado NO cambia**.
-   - Lo que cambia es el nivel de absorción solar / tinte, transformándose cinéticamente tanto en la vista POV como en el avatar.
-3. **Modo Kiosco / Temporizador de Inactividad:**
-   - Temporizador de **5 minutos (300.000 ms)** sin interacción del usuario.
-   - Al cumplirse, la aplicación regresa suavemente a la Portada (el avatar vuelve a tamaño grande central y el sistema se resetea a estado limpio).
-
----
-
-## 👤 5. Especificaciones del Avatar 3D
-* **Plataformas de referencia evaluadas:** Ready Player Me y Hyper3D (ChatAvatar).
-* **Formato:** Archivo estático y/o `.glb` con blendshapes ARKit.
-* **Comportamiento en la aplicación:**
-  - En Portada: Renderizado hero en primer plano centrado con micro-animación de respiración viva.
-  - En Cabina: Widget en esquina inferior derecha como mini-espejo en tiempo real con tintado dinámico sincronizado y reacciones de aplauso (`clapping`) al activar lentes.
+### D. Portada Clínica y Modo Kiosco
+* Archivos: `src/components/landing-screen.js`, `src/styles/landing.css`.
+* Sin sliders inertes; incluye fichas clínicas de la tecnología *Transitions® Gen S™* y la *Cabina de Demostración*.
+* Botón de salir de pantalla completa condicional (solo visible si el navegador ya está en pantalla completa).
+* Temporizador de inactividad de **5 minutos** que regresa a la portada automáticamente.
 
 ---
 
-## 🛠️ 6. Stack Tecnológico
-* **Bundler & Dev Server:** Vite (`npm run dev`, `npm run build`).
-* **Estilos:** CSS Modular con estética *Dark Glass Cyber-Clínica* (`#070B14`, microbordes traslúcidos `rgba(255,255,255,0.08)`, tipografía sans-serif de alta nitidez *Plus Jakarta Sans*).
-* **Gestor de Estado y Cinemática:** Motor desacoplado a 60 FPS con EventBus.
+## ⚙️ 4. Guía Rápida para Continuar el Proyecto
+
+```bash
+# 1. Asegurarse de estar en la rama de desarrollo
+git checkout dev
+
+# 2. Instalar dependencias si es necesario
+npm install
+
+# 3. Iniciar servidor de desarrollo
+npm run dev
+
+# 4. Compilar para producción (validación de bundle)
+npx vite build --base=/transitions-simulator/
+
+# 5. Flujo de despliegue a GitHub Pages tras verificar cambios en dev
+git commit -am "tipo: descripción clara del cambio"
+git push origin dev
+git checkout main
+git merge dev
+git push origin main
+git checkout dev
+```
 
 ---
 
-## 🚀 7. Estado Actual de la Implementación (Progreso Registrado)
-
-A fecha de hoy, la base de la aplicación se encuentra **100% funcional, compilada y probada**:
-
-1. **Entorno Base y Configuración:**
-   - `package.json`, `vite.config.js` e `index.html` configurados.
-   - Soporte para base path dinámico (`/transitions-simulator/` en GitHub Pages).
-2. **Escenas y Recursos Visuales:**
-   - `public/scenes/parque-familiar.jpg`: Parque exterior soleado de alta resolución (UV 9.2).
-   - `public/scenes/museo-arte.jpg`: Museo interior arquitectónico con luz tenue (UV 0.1).
-   - `public/avatar/avatar-hero.jpg` y `public/avatar/avatar-clapping.jpg`: Modelos del avatar hero y aplauso.
-   - `public/branding/favicon.svg` y `public/manifest.json`.
-3. **Núcleo Lógico y Datos Clínicos:**
-   - `src/core/event-bus.js`: Sistema de eventos desacoplado (`on`, `off`, `emit`).
-   - `src/core/lenses-data.js`: Definición de las 4 familias tecnológicas (Gen S, XTRActive, Mirrors, Generic) con coeficientes de absorción, RGBs de tinte y velocidades de activación.
-   - `src/core/simulator-state.js`: Estado reactivo global, persistencia de lente entre escenas y temporizador modo Kiosco (5 min).
-   - `src/core/kinetic-engine.js`: Motor de cálculo cinético continuo a 60 FPS para absorción e índice UV.
-4. **Visor POV y Escenas:**
-   - `src/scenes/scene-manager.js`: Transición crossfade entre Parque y Museo con resplandor periférico de sol directo.
-   - `src/components/glasses-pov.js`: Montura Wayfarer vectorial con cristales independientes (máscaras clipPath SVG), atenuación fotópica, tinte multiplicativo, destello espejo y micro-paralaje al mover el cursor.
-5. **Componentes HUD y Cyber-Glass:**
-   - `src/components/landing-screen.js`: Portada Hero con avatar grande, retículas, gráficos de curva, y botón CTA neón con fullscreen.
-   - `src/components/hud-header.js`: Cabecera con branding, medidor dinámico read-only de absorción/categoría (`88% Absorción - Cat. 3 Sol Intenso`) y conmutador de escenas.
-   - `src/components/lens-selector.js`: Selector lateral por familias morada, ámbar, azul y gris.
-   - `src/components/avatar-widget.js`: Mini-espejo reactivo con tintado sincronizado y aplausos.
-6. **Compilación de Producción:**
-7. **Motor 3D Real Three.js y Modelo `.glb` Integrado:**
-   - Modelo real descargado e incorporado en `public/avatar/avatar.glb` (4.7 MB, con 78 huesos y malla independiente `Wolf3D_Glasses`).
-   - `src/core/avatar-3d-engine.js`: Renderizado WebGL a 60 FPS con fondo transparente (`alpha: true`), iluminación de estudio PBR, seguimiento esquelético de cabeza y cuello hacia el cursor (`Head`, `Neck`), respiración viva continua (`Spine2`) y pestañeo involuntario con morph targets (`eyeBlinkLeft`, `eyeBlinkRight`).
-   - Tintado físico PBR sobre las gafas: El material de `Wolf3D_Glasses` ajusta en tiempo real su transmisión, opacidad, reflectividad y color espectral según la curva cinética del lente fotosensible seleccionado.
-8. **Compilación de Producción:**
-   - Verificada exitosamente con `npx vite build --base=/transitions-simulator/`.
-
----
-
-## 📋 8. Próximos Pasos para la Siguiente Sesión
-
-1. **Revisión y feedback del usuario** sobre la estética, el avatar 3D y tiempos cinéticos.
-2. **Pruebas en dispositivo táctil / tablet de consulta optométrica.**
-3. **Verificación final en producción** en GitHub Pages.
+## 🏢 5. Autoría y Licencia
+* **Organización:** Visiometric Labs
+* **Autor:** JayzirTech
+* **Copyright:** © 2026 JayzirTech. Todos los derechos reservados.

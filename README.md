@@ -1,33 +1,79 @@
-# Transitions Simulator (Luminix) by Visiometric Labs 🕶️✨
+# Luminix™ by Visiometric Labs 🕶️✨
+> **Simulador Clínico Interactivo de Lentes Fotosensibles Transitions® y Probador Facial 3D en Mostrador**  
+> Desarrollado por **JayzirTech** para **Visiometric Labs**.
 
-Simulador clínico y probador interactivo de lentes fotosensibles (**Transitions®** y comparativa con estándar) en primera persona (POV) con avatar integrado reactivo en tiempo real.
+[![Despliegue GitHub Pages](https://github.com/visiometric-labs/transitions-simulator/actions/workflows/deploy.yml/badge.svg)](https://visiometric-labs.github.io/transitions-simulator/)
+[![Demo En Vivo](https://img.shields.io/badge/Demo%20En%20Vivo-GitHub%20Pages-38BDF8?style=flat&logo=github)](https://visiometric-labs.github.io/transitions-simulator/)
 
 ---
 
-## 🎯 Resumen de Arquitectura y Especificaciones
-- **Nombre de Marca:** Luminix by Visiometric Labs
-- **Repositorio:** [transitions-simulator (GitHub)](https://github.com/visiometric-labs/transitions-simulator.git)
-- **Flujo del Avatar 3D:**
-  - **En Portada:** Avatar 3D en **tamaño grande**, con micro-expresiones aleatorias vivas (parpadeo, sorpresa, felicidad, respiración).
-  - **En la Experiencia:** Transiciona suavemente a **tamaño mediano** en una tarjeta/widget integrado en la misma pantalla.
-  - **Animaciones y Reacciones:** Compatible con Ready Player Me `.glb` + Mixamo (aplauso, felicidad, asombro al activarse la lente).
-- **Escenas fijas:**
-  1. **Parque en plan familiar** (Exterior soleado, radiación UV alta).
-  2. **Dentro de un museo** (Interior tenue, iluminación controlada).
-- **Selector Izquierdo por Familias:** Botones agrupados y coloreados por familia (Signature Gen S / Gen 8, XTRActive, Style Mirrors, Fotocromático Estándar).
-- **Cinética Dinámica:** Al conmutar escenas, el lente activo se conserva y la intensidad de oscurecimiento transiciona suavemente en la 1ra persona y en el avatar.
-- **Medidor de Intensidad:** Indicador visual dinámico (read-only, no modificable por el usuario).
-- **Modo Kiosco:** Temporizador de inactividad de **5 minutos** con retorno automático a la portada.
-- **Estrategia de Ramas:**
-  - `dev`: Rama predeterminada de desarrollo.
-  - `main`: Rama de despliegue exclusivo a GitHub Pages.
+## 🎯 Descripción General
 
-Para consultar la especificación clínica detallada, ver [CONCEPT.md](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/CONCEPT.md).  
-Para que cualquier agente de IA o desarrollador continúe el proyecto con todas las reglas claras, ver [AI_CONTEXT.md](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/AI_CONTEXT.md).  
-Las referencias visuales aprobadas están guardadas en `docs/mockups/`.
+**Luminix** es una plataforma clínica de simulación óptica en primera persona (POV) y probador virtual facial en 3D en tiempo real, diseñada específicamente para ópticas, consultorios optométricos y mostradores de atención a pacientes.
+
+Permite al paciente experimentar de forma vívida e interactiva la diferencia entre la visión al descubierto (deslumbrada por la radiación solar y la luz artificial) y la protección visual inteligente de las lentes fotosensibles **Transitions®** (*Signature Gen S™*, *XTRActive® Polarized*, *Style Mirrors™* y comparativa con estándar).
+
+---
+
+## 🔬 Capacidades Clínicas y Tecnológicas Destacadas
+
+### 1. Visión en Primera Persona (POV) con Comparativa de Deslumbramiento
+- **Visión al Descubierto (Sin Gafas)**: Implementa un motor óptico multinivel de 4 capas con sobreexposición natural (50,000+ lux), resplandor fotónico (*bloom* corneal), puntos calientes especulares (*hotspots* con `color-dodge`) y velo solar cegador (*veiling glare* y rayos volumétricos).
+- **Visión a Través del Cristal (Transitions®)**: Elimina el deslumbramiento cegador, reduce la luminancia a un nivel descansado, restaura el contraste cromático de los detalles y aplica el tintado cinético activo con reflejos antirreflejo Crizal y espejos flash.
+- **Navegación Interactiva de la Mirada (Gaze POV)**: El paciente puede mover el cursor o arrastrar con el dedo para inclinar su línea de visión:
+  - **Mirar hacia Arriba**: Permite mirar directamente por encima de la montura al sol deslumbrante sin filtro.
+  - **Mirar al Centro**: El paciente vuelve a cubrir su línea de visión con el lente fotosensible, experimentando el confort inmediato.
+  - **Mirar a los Lados**: Comparativa directa de visión periférica descubierta vs. visión central protegida.
+
+### 2. Avatar Facial 3D Real (Three.js + WebGL)
+- **Modelo 3D Integrado (`avatar.glb`)**: Esqueleto óseo completo con articulación facial y *morph targets* de parpadeo involuntario fisiológico y sonrisa.
+- **Movimiento Autónomo Natural (Talking Cat style)**: El avatar no sigue mecánicamente el cursor; tiene comportamientos y miradas autónomas donde mirar al frente es la orientación predominante y más prolongada (~70% del tiempo).
+- **Separación de Marco vs. Cristal**: La montura (`Wolf3D_Glasses`) se mantiene en un elegante acabado de acetato negro satinado permanente que **jamás cambia de color**, mientras que mallas físicas dedicadas (`THREE.SkinnedMesh` con `MeshPhysicalMaterial`) modulan exclusivamente el tintado óptico, transmisión y reflejo espejo del cristal.
+
+### 3. Escenarios Clínicos y Transición de 200 ms
+- **Parque Familiar (Exteriores Soleados)**: Radiación UV 9.2 con oscurecimiento solar cinético en tiempo real (~25 s).
+- **Museo de Arte (Interiores con Luz Controlada)**: UV 0.1 con aclarado acelerado progresivo (*fade-back*).
+- **Transición Sincronizada de 200 ms**: Al conmutar escenarios, tanto el fondo panorámico como la imagen proyectada dentro de los cristales transicionan simultáneamente en exactamente 200 ms.
+
+### 4. Portada Clínica Institucional
+- Eliminación de elementos decorativos inertes.
+- Tarjetas de especificación clínica de la tecnología *Transitions® Gen S™* y la *Cabina en Mostrador*.
+- Botón de pantalla completa condicional (solo aparece el botón de salir cuando el navegador ya está en pantalla completa).
+- Derechos de autor institucionales: *© 2026 JayzirTech. Todos los derechos reservados. • Luminix by Visiometric Labs*.
+
+---
+
+## 👓 Familias Oftálmicas Disponibles
+
+| Familia | Tonalidades | Características Principales |
+| :--- | :--- | :--- |
+| **Signature Gen S™** | Rubí, Zafiro, Amatista, Esmeralda, Ámbar | Dinámica cinética ultrarrápida (25 s), claridad cristalina en interiores, 100% protección UV y luz azul. |
+| **XTRActive® Polarized** | Gris Polarizado, Grafito Verde | Máxima protección solar y fotoprotección en cabina de automóvil con corte de reflejos horizontales. |
+| **Style Mirrors™** | Azul Flash, Plata Flash, Oro Flash | Recubrimiento de espejo moderno en exteriores que se atenúa a un brillo sutil en interiores. |
+| **Monofocal Estándar** | Fotocromático Básico | Lente tradicional con activación estándar para comparativa pedagógica frente a Gen S. |
+
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Entorno & Bundler:** [Vite](https://vitejs.dev/) + Vanilla JavaScript ES Modules.
+- **Motor 3D:** [Three.js](https://threejs.org/) (GLTFLoader, SkinnedMesh, MeshPhysicalMaterial, ACESFilmicToneMapping).
+- **Gráficos Vectoriales & POV:** SVG binocular panorámico con doble pase óptico y máscaras de recorte dinámicas.
+- **Arquitectura de Eventos:** EventBus desacoplado y máquina de estados global reactiva.
+- **Modo Kiosco:** Temporizador de inactividad de 5 minutos con retorno automático a la portada.
+- **CI/CD:** GitHub Actions con despliegue automatizado a GitHub Pages.
+
+---
+
+## 🌿 Flujo Git y Ramas
+
+- **`dev`**: Rama de desarrollo activo (todas las mejoras y cambios se realizan aquí).
+- **`main`**: Rama de producción estable vinculada al despliegue automático de GitHub Pages.
 
 ---
 
 ## 🏢 Autoría y Licencia
+
 - **Organización:** Visiometric Labs
-- **Autor:** JayzirTech
+- **Desarrollo y Arquitectura:** JayzirTech
+- **Tecnología de Referencia:** Transitions Optical / EssilorLuxottica
