@@ -1,4 +1,4 @@
-/* Estilos específicos de la Portada / Landing Screen */
+/* Estilos específicos de la Portada / Landing Screen - Luminix by Visiometric Labs */
 
 .landing-overlay {
   position: absolute;
@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 28px 44px 20px 44px;
+  padding: 24px 36px 18px 36px;
   overflow: hidden;
 }
 
@@ -21,10 +21,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 720px;
-  height: 720px;
+  width: 760px;
+  height: 760px;
   pointer-events: none;
-  opacity: 0.22;
+  opacity: 0.18;
   z-index: 1;
 }
 
@@ -34,14 +34,14 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  z-index: 10;
+  z-index: 15;
 }
 
-.landing-brand-pill {
+.landing-brand {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 10px 24px;
+  padding: 8px 20px;
   background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass-light);
@@ -50,8 +50,8 @@
 }
 
 .landing-brand-icon {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +63,7 @@
 }
 
 .landing-brand-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   color: #FFFFFF;
@@ -77,139 +77,206 @@
   letter-spacing: 0.04em;
 }
 
-/* Indicadores laterales HUD en Landing */
-.landing-side-hud-left,
-.landing-side-hud-right {
+/* Acciones en la Cabecera de Portada */
+.landing-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botón Salir de Pantalla Completa en Portada (Solo visible si ya está en pantalla completa) */
+.btn-exit-fullscreen-landing {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #E2E8F0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-glass);
+}
+
+.btn-exit-fullscreen-landing:hover {
+  background: rgba(56, 189, 248, 0.20);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38BDF8;
+  transform: translateY(-1px);
+}
+
+.btn-exit-fullscreen-landing.visible {
+  display: flex;
+}
+
+.landing-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #38BDF8;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.landing-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
+  animation: badge-pulse 2s infinite ease-in-out;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Paneles Laterales Informativos (Reemplazo de los sliders inertes) */
+.landing-info-card {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.landing-side-hud-left {
-  left: 48px;
-}
-
-.landing-side-hud-right {
-  right: 48px;
-}
-
-.hud-slider-widget {
-  width: 58px;
-  height: 260px;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(16px);
+  width: 290px;
+  background: rgba(10, 16, 29, 0.68);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
   border: 1px solid var(--border-glass);
   border-radius: 22px;
+  padding: 20px 18px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 10px;
+  gap: 14px;
+  z-index: 10;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
 }
 
-.hud-slider-track {
-  width: 4px;
-  height: 160px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 2px;
-  position: relative;
+.landing-info-left {
+  left: 36px;
 }
 
-.hud-slider-thumb {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #38BDF8;
-  box-shadow: 0 0 10px #38BDF8;
+.landing-info-right {
+  right: 36px;
 }
 
-.hud-slider-thumb.amber {
-  background: #F59E0B;
-  box-shadow: 0 0 10px #F59E0B;
+.info-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.hud-curve-card {
-  width: 130px;
-  height: 80px;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass);
-  border-radius: 16px;
-  padding: 8px;
+.info-pill-tag {
+  align-self: flex-start;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  text-transform: uppercase;
+}
+
+.landing-info-right .info-pill-tag {
+  background: rgba(245, 158, 11, 0.12);
+  color: #F59E0B;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.info-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.info-card-desc {
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.info-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.info-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: var(--transition-fast);
+}
+
+.info-feature-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+.info-feature-icon {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.8);
+  margin-top: 1px;
 }
 
-/* Avatar Hero Central (Estilo "Talking Cat" con animación de respiración y seguimiento) */
+.info-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-feature-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #E2E8F0;
+  letter-spacing: 0.01em;
+}
+
+.info-feature-sub {
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: var(--text-dim);
+}
+
+/* Avatar Hero Central */
 .landing-hero-center {
   position: absolute;
   top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
-  height: 500px;
+  width: 480px;
+  height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5;
-  perspective: 800px;
-}
-
-.landing-avatar-body {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: talking-cat-hero-idle 4.5s infinite ease-in-out;
-  transform-origin: center bottom;
-  cursor: pointer;
-  transition: transform 0.18s ease-out;
-}
-
-@keyframes talking-cat-hero-idle {
-  0%, 100% {
-    transform: translateY(0px) scale(1) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-5px) scale(1.012) rotate(0.4deg);
-  }
-  50% {
-    transform: translateY(-9px) scale(1.02) rotate(-0.3deg);
-  }
-  75% {
-    transform: translateY(-3px) scale(1.008) rotate(0.2deg);
-  }
-}
-
-.landing-avatar-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.7));
   pointer-events: none;
-}
-
-/* Capa de tintado de lentes en portada si el usuario prueba lentes */
-.landing-avatar-lens-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 6;
 }
 
 /* Footer y Botón CTA Central */
@@ -218,7 +285,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   z-index: 20;
 }
@@ -228,7 +295,7 @@
   align-items: center;
   gap: 14px;
   padding: 15px 42px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.88);
   backdrop-filter: blur(24px);
   border: 2px solid transparent;
   border-radius: 40px;
@@ -236,7 +303,7 @@
   outline: none;
   position: relative;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-  box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), 0 8px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 32px rgba(56, 189, 248, 0.35), 0 8px 30px rgba(0, 0, 0, 0.5);
   background-clip: padding-box;
 }
 
@@ -288,7 +355,7 @@
 }
 
 .cta-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.01em;
@@ -300,8 +367,8 @@
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  margin-top: 6px;
-  font-size: 0.73rem;
+  margin-top: 4px;
+  font-size: 0.72rem;
   color: var(--text-dim);
   letter-spacing: 0.01em;
   text-align: center;
@@ -313,6 +380,27 @@
 }
 
 .landing-copyright .copyright-sub {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   opacity: 0.75;
+}
+
+/* Ajustes Responsive para Pantallas Medianas y Pequeñas */
+@media (max-width: 1180px) {
+  .landing-info-card {
+    width: 240px;
+    padding: 14px 12px;
+  }
+  .info-feature-sub {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .landing-info-card {
+    display: none;
+  }
+  .landing-hero-center {
+    width: 380px;
+    height: 380px;
+  }
 }

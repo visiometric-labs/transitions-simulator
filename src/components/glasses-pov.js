@@ -15,6 +15,8 @@ export class GlassesPOV {
     this.element = document.createElement('div');
     this.element.className = 'glasses-pov-layer';
 
+    const isPark = this.currentScene.id === 'park';
+
     // SVG 1920x1080 con apertura binocular panorámica natural y puente estilizado de 50px
     this.element.innerHTML = `
       <svg id="glasses-pov-svg" width="100%" height="100%" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
@@ -85,12 +87,19 @@ export class GlassesPOV {
         
         <!-- Lente Izquierdo -->
         <g clip-path="url(#left-lens-clip)">
-          <!-- Imagen de Escena con Filtro Óptico (Brillo atenuado confortable, nunca negro) -->
-          <image id="left-lens-scene-img" 
-                 href="${this.currentScene.bgImage}" 
+          <!-- Escena Parque Familiar (progresión sincronizada de 200ms) -->
+          <image id="left-lens-scene-park" 
+                 href="./scenes/parque-familiar.jpg" 
                  x="0" y="0" width="1920" height="1080" 
                  preserveAspectRatio="xMidYMid slice" 
-                 style="filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: filter 0.2s linear;" />
+                 style="opacity: ${isPark ? '1' : '0'}; filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: opacity 200ms ease-in-out, filter 0.2s linear;" />
+
+          <!-- Escena Museo de Arte (progresión sincronizada de 200ms) -->
+          <image id="left-lens-scene-museum" 
+                 href="./scenes/museo-arte.jpg" 
+                 x="0" y="0" width="1920" height="1080" 
+                 preserveAspectRatio="xMidYMid slice" 
+                 style="opacity: ${isPark ? '0' : '1'}; filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: opacity 200ms ease-in-out, filter 0.2s linear;" />
           
           <!-- Capa de Tinte Fotosensible Primario (Multiply suave con color real) -->
           <rect id="left-lens-tint" x="0" y="0" width="1920" height="1080" 
@@ -109,12 +118,19 @@ export class GlassesPOV {
 
         <!-- Lente Derecho -->
         <g clip-path="url(#right-lens-clip)">
-          <!-- Imagen de Escena con Filtro Óptico (Brillo atenuado confortable, nunca negro) -->
-          <image id="right-lens-scene-img" 
-                 href="${this.currentScene.bgImage}" 
+          <!-- Escena Parque Familiar (progresión sincronizada de 200ms) -->
+          <image id="right-lens-scene-park" 
+                 href="./scenes/parque-familiar.jpg" 
                  x="0" y="0" width="1920" height="1080" 
                  preserveAspectRatio="xMidYMid slice" 
-                 style="filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: filter 0.2s linear;" />
+                 style="opacity: ${isPark ? '1' : '0'}; filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: opacity 200ms ease-in-out, filter 0.2s linear;" />
+
+          <!-- Escena Museo de Arte (progresión sincronizada de 200ms) -->
+          <image id="right-lens-scene-museum" 
+                 href="./scenes/museo-arte.jpg" 
+                 x="0" y="0" width="1920" height="1080" 
+                 preserveAspectRatio="xMidYMid slice" 
+                 style="opacity: ${isPark ? '0' : '1'}; filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: opacity 200ms ease-in-out, filter 0.2s linear;" />
           
           <!-- Capa de Tinte Fotosensible Primario (Multiply suave con color real) -->
           <rect id="right-lens-tint" x="0" y="0" width="1920" height="1080" 
@@ -209,18 +225,24 @@ export class GlassesPOV {
   }
 
   bindEvents() {
-    const leftSceneImg = this.element.querySelector('#left-lens-scene-img');
-    const rightSceneImg = this.element.querySelector('#right-lens-scene-img');
+    const leftScenePark = this.element.querySelector('#left-lens-scene-park');
+    const leftSceneMuseum = this.element.querySelector('#left-lens-scene-museum');
+    const rightScenePark = this.element.querySelector('#right-lens-scene-park');
+    const rightSceneMuseum = this.element.querySelector('#right-lens-scene-museum');
+    const allSceneImages = [leftScenePark, leftSceneMuseum, rightScenePark, rightSceneMuseum];
+
     const leftTint = this.element.querySelector('#left-lens-tint');
     const rightTint = this.element.querySelector('#right-lens-tint');
     const leftMirror = this.element.querySelector('#left-lens-mirror');
     const rightMirror = this.element.querySelector('#right-lens-mirror');
 
-    // Actualización de Escena (sincronizar imagen interior)
-    eventBus.on('scene:change', ({ scene }) => {
-      this.currentScene = scene;
-      leftSceneImg.setAttribute('href', scene.bgImage);
-      rightSceneImg.setAttribute('href', scene.bgImage);
+    // Actualización de Escena con progresión suave de 200ms sincronizada con la escena exterior
+    eventBus.on('scene:change', ({ sceneId }) => {
+      const isPark = sceneId === 'park';
+      if (leftScenePark) leftScenePark.style.opacity = isPark ? '1' : '0';
+      if (leftSceneMuseum) leftSceneMuseum.style.opacity = isPark ? '0' : '1';
+      if (rightScenePark) rightScenePark.style.opacity = isPark ? '1' : '0';
+      if (rightSceneMuseum) rightSceneMuseum.style.opacity = isPark ? '0' : '1';
     });
 
     // Actualización Cinética Continua en Tiempo Real
@@ -233,8 +255,9 @@ export class GlassesPOV {
       const saturate = 1.0 + (absorption * 0.20);
       const filterCss = `brightness(${brightness.toFixed(2)}) contrast(${contrast.toFixed(2)}) saturate(${saturate.toFixed(2)})`;
       
-      leftSceneImg.style.filter = filterCss;
-      rightSceneImg.style.filter = filterCss;
+      allSceneImages.forEach(img => {
+        if (img) img.style.filter = filterCss;
+      });
 
       // 2. Tinte cromático fotosensible suave (multiply translúcido que conserva 100% de los detalles)
       const [r, g, b] = lens.tintRgb;

@@ -29,77 +29,130 @@ export class LandingScreen {
 
       <!-- Cabecera Superior -->
       <header class="landing-header">
-        <div class="landing-brand-pill">
+        <div class="landing-brand">
           <div class="landing-brand-icon">
             <img src="./branding/favicon.svg" alt="Luminix Logo" width="38" height="38" />
           </div>
           <div class="landing-brand-text">
-            <span class="landing-brand-title">LUMINIX</span>
-            <span class="landing-brand-sub">by Visiometric Labs</span>
+            <span class="landing-brand-title">Luminix</span>
+            <span class="landing-brand-sub">by Visiometric Labs • JayzirTech</span>
           </div>
         </div>
 
-        <!-- Botón para Salir / Entrar a Pantalla Completa en Portada -->
-        <button id="btn-landing-fullscreen" class="btn-fullscreen-toggle" type="button" title="Pantalla completa / Salir de pantalla completa" aria-label="Alternar pantalla completa">
-          <svg class="fs-icon-enter" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-          </svg>
-          <svg class="fs-icon-exit" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display: none;">
-            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
-          </svg>
-        </button>
+        <!-- Acciones en Cabecera: Botón Salir de Pantalla Completa (condicional) + Badge 4K -->
+        <div class="landing-header-actions">
+          <button type="button" class="btn-exit-fullscreen-landing" id="btn-landing-exit-fullscreen" title="Salir de pantalla completa" aria-label="Salir de pantalla completa">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            </svg>
+            <span>Salir de Pantalla Completa</span>
+          </button>
+
+          <div class="landing-badge-pill">
+            <span class="landing-badge-dot"></span>
+            <span>Simulador Clínico 4K</span>
+          </div>
+        </div>
       </header>
 
-      <!-- Indicadores Laterales HUD -->
-      <aside class="landing-side-hud-left" aria-hidden="true">
-        <div class="hud-slider-widget">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-          </svg>
-          <div class="hud-slider-track">
-            <div class="hud-slider-thumb" style="top: 35%;"></div>
-          </div>
-          <div style="width: 14px; height: 2px; background: rgba(255,255,255,0.2);"></div>
+      <!-- Panel Lateral Izquierdo: Información Tecnológica Transitions Gen S -->
+      <aside class="landing-info-card landing-info-left" aria-label="Información Tecnológica">
+        <div class="info-card-header">
+          <div class="info-pill-tag">TECNOLOGÍA ÓPTICA</div>
+          <h3 class="info-card-title">Transitions® Gen S™</h3>
         </div>
+        <p class="info-card-desc">
+          La nueva frontera de lentes fotosensibles inteligentes con dinámica cinética acelerada a la radiación lumínica.
+        </p>
+        <div class="info-features-list">
+          <div class="info-feature-item">
+            <div class="info-feature-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+              </svg>
+            </div>
+            <div class="info-feature-text">
+              <span class="info-feature-label">Cinética Ultrarrápida</span>
+              <span class="info-feature-sub">Activación en 25 segundos al exterior y aclarado récord en interiores.</span>
+            </div>
+          </div>
 
-        <div class="hud-curve-card">
-          <svg width="110" height="60" viewBox="0 0 110 60" fill="none">
-            <path d="M 5 15 C 35 15, 65 50, 105 50" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" />
-            <path d="M 5 15 C 35 15, 65 50, 105 50 L 105 58 L 5 58 Z" fill="url(#cyanCurveGrad)" opacity="0.25" />
-            <defs>
-              <linearGradient id="cyanCurveGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#38BDF8" />
-                <stop offset="100%" stop-color="#38BDF8" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
+          <div class="info-feature-item">
+            <div class="info-feature-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="info-feature-text">
+              <span class="info-feature-label">Protección 100% UV</span>
+              <span class="info-feature-sub">Bloqueo absoluto de rayos UVA/UVB y filtrado selectivo de luz azul nociva.</span>
+            </div>
+          </div>
+
+          <div class="info-feature-item">
+            <div class="info-feature-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/>
+              </svg>
+            </div>
+            <div class="info-feature-text">
+              <span class="info-feature-label">8 Tonalidades Rubí & Zafiro</span>
+              <span class="info-feature-sub">Paleta vibrante con máxima fidelidad visual y nitidez sin distorsión.</span>
+            </div>
+          </div>
         </div>
       </aside>
 
-      <aside class="landing-side-hud-right" aria-hidden="true">
-        <div class="hud-slider-widget">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/>
-          </svg>
-          <div class="hud-slider-track">
-            <div class="hud-slider-thumb amber" style="top: 60%;"></div>
-          </div>
-          <div style="width: 14px; height: 2px; background: rgba(255,255,255,0.2);"></div>
+      <!-- Panel Lateral Derecho: Información de la Cabina Clínica Interactiva -->
+      <aside class="landing-info-card landing-info-right" aria-label="Información de la Demostración">
+        <div class="info-card-header">
+          <div class="info-pill-tag">CABINA EN MOSTRADOR</div>
+          <h3 class="info-card-title">Simulador Clínico</h3>
         </div>
+        <p class="info-card-desc">
+          Herramienta pedagógica de asesoramiento optométrico para punto de venta y toma informada de decisión del paciente.
+        </p>
+        <div class="info-features-list">
+          <div class="info-feature-item">
+            <div class="info-feature-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div class="info-feature-text">
+              <span class="info-feature-label">Visión Binocular POV</span>
+              <span class="info-feature-sub">Experimenta en primera persona la absorción de luz sin pérdida de contraste.</span>
+            </div>
+          </div>
 
-        <div class="hud-curve-card">
-          <svg width="110" height="60" viewBox="0 0 110 60" fill="none">
-            <path d="M 5 50 C 45 50, 75 15, 105 15" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" />
-            <path d="M 5 50 C 45 50, 75 15, 105 15 L 105 58 L 5 58 Z" fill="url(#amberCurveGrad)" opacity="0.25" />
-            <defs>
-              <linearGradient id="amberCurveGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#F59E0B" />
-                <stop offset="100%" stop-color="#F59E0B" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
+          <div class="info-feature-item">
+            <div class="info-feature-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="info-feature-text">
+              <span class="info-feature-label">Probador Facial en Tiempo Real</span>
+              <span class="info-feature-sub">Avatar facial 3D reactivo que exhibe el oscurecimiento real del cristal.</span>
+            </div>
+          </div>
+
+          <div class="info-feature-item">
+            <div class="info-feature-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <div class="info-feature-text">
+              <span class="info-feature-label">4 Familias Especializadas</span>
+              <span class="info-feature-sub">Compara Signature Gen S, XTRActive Polarized, Style Mirrors y Estándar.</span>
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -113,7 +166,7 @@ export class LandingScreen {
         <button id="cta-start-experience" class="cta-button-main" type="button" aria-label="Iniciar experiencia de simulación">
           <div class="cta-icon-box">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
           </div>
           <span class="cta-text">INICIAR EXPERIENCIA</span>
@@ -143,9 +196,7 @@ export class LandingScreen {
 
   bindEvents() {
     const startBtn = this.element.querySelector('#cta-start-experience');
-    const fsBtn = this.element.querySelector('#btn-landing-fullscreen');
-    const iconEnter = fsBtn.querySelector('.fs-icon-enter');
-    const iconExit = fsBtn.querySelector('.fs-icon-exit');
+    const exitFsBtn = this.element.querySelector('#btn-landing-exit-fullscreen');
     const yearEl = this.element.querySelector('#copyright-year');
 
     if (yearEl) {
@@ -156,33 +207,30 @@ export class LandingScreen {
       this.handleStartExperience();
     });
 
-    // Control de pantalla completa
-    const updateFsIcon = () => {
+    // Control de pantalla completa: EN LA PORTADA SOLO APARECE BOTÓN DE SALIR SI ESTÁ EN PANTALLA COMPLETA
+    const updateFsVisibility = () => {
       const isFs = !!document.fullscreenElement;
-      if (isFs) {
-        iconEnter.style.display = 'none';
-        iconExit.style.display = 'block';
-      } else {
-        iconEnter.style.display = 'block';
-        iconExit.style.display = 'none';
+      if (exitFsBtn) {
+        exitFsBtn.classList.toggle('visible', isFs);
       }
     };
 
-    fsBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    });
+    if (exitFsBtn) {
+      exitFsBtn.addEventListener('click', () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+    }
 
-    document.addEventListener('fullscreenchange', updateFsIcon);
+    document.addEventListener('fullscreenchange', updateFsVisibility);
+    updateFsVisibility();
 
     eventBus.on('screen:change', ({ screen }) => {
       if (screen === 'landing') {
         this.element.classList.remove('screen-hidden');
         this.element.classList.add('screen-visible');
-        updateFsIcon();
+        updateFsVisibility();
       } else {
         this.element.classList.remove('screen-visible');
         this.element.classList.add('screen-hidden');
