@@ -14,19 +14,44 @@
 
 ## 🖼️ 2. Arquitectura de Pantalla y Composición Visual
 
-### 2.1 Vista Integrada Simultánea (POV + Avatar en la misma pantalla)
-A diferencia de simuladores convencionales que obligan al usuario a alternar pestañas:
-1. **Visión Principal en 1ª Persona (POV):**
-   * El paciente mira a través de los lentes hacia el escenario activo.
-   * Renderizado cinemático con marco de montura y visión periférica exterior comparativa.
-2. **Avatar Mediano Integrado (Mini-Espejo / Vista en 3ª Persona):**
-   * Ubicado en un cuadrante visible y elegante de la pantalla (widget/tarjeta flotante).
-   * Muestra un avatar con las gafas puestas.
-   * **Reacción en tiempo real:** Los cristales de las gafas del avatar adoptan el mismo color, tonalidad y porcentaje de oscurecimiento seleccionado, permitiendo evaluar cómo luce el lente sobre el rostro al mismo tiempo que se experimenta la visión POV.
+### 2.1 Portada / Bienvenida (Hero Landing Screen)
+* **Avatar Protagonista en Tamaño Grande:**  
+  * Al iniciar la aplicación, el avatar 3D aparece en primer plano (tamaño grande/hero).
+  * Lleva puestas las gafas y realiza micro-expresiones aleatorias continuas (parpadeos, sonrisas, gestos de bienvenida o asombro).
+  * Invita al paciente a pulsar el botón central **"Iniciar Experiencia"** / Pantalla Completa.
+
+### 2.2 Transición Cinemática hacia la Experiencia
+* Al presionar "Iniciar Experiencia":
+  * El avatar transiciona suavemente de tamaño grande en portada a **tamaño mediano**, ubicándose en su tarjeta/widget interactivo flotante en una esquina de la cabina.
+  * Se abre la visión en 1ra persona (POV) del escenario activo.
+
+### 2.3 Vista Integrada Simultánea (POV + Avatar en la misma pantalla)
+* **Visión Principal en 1ª Persona (POV):**
+  * El paciente mira a través de los lentes hacia el escenario activo (Parque o Museo).
+  * Renderizado cinemático con marco de montura y visión periférica exterior comparativa.
+* **Avatar Mediano Integrado (Mini-Espejo / Vista en 3ª Persona):**
+  * Ubicado en un cuadrante visible y elegante de la pantalla (widget/tarjeta flotante).
+  * Muestra al avatar con las gafas puestas.
+  * **Reacción en tiempo real:** Los cristales de las gafas del avatar adoptan el mismo color, tonalidad y porcentaje de oscurecimiento seleccionado, permitiendo evaluar cómo luce el lente sobre el rostro al mismo tiempo que se experimenta la visión POV.
 
 ---
 
-## 🌄 3. Escenas Clínicas del Entorno
+## 👤 3. Motor de Comportamiento y Expresiones del Avatar 3D
+
+Para lograr que el avatar se sienta completamente vivo, dinámico y humano:
+1. **Bucle de Expresiones Aleatorias Continuas:**
+   * **Parpadeo natural (*Blink*):** Pestañeo involuntario cada 3 a 5 segundos con micro-variaciones de frecuencia.
+   * **Expresiones faciales combinadas (Blendshapes / Morph Targets de Ready Player Me):**
+     * **Cara de sorpresa:** Cejas elevadas (`browInnerUp`), apertura de ojos y boca en 'O' (`jawOpen`).
+     * **Cara de felicidad / satisfacción:** Sonrisa natural (`mouthSmileLeft`, `mouthSmileRight`), achinamiento de ojos de agrado.
+     * **Micro-movimientos de cabeza:** Leves ladeos, giros sutiles de mirada (*eye tracking* o *look around*).
+2. **Reacciones Contextuales y Animaciones Corporales (Mixamo Rig):**
+   * **Aplausos / Celebración (*Clapping*):** El avatar puede aplaudir o sonreír con satisfacción cuando el paciente prueba un lente y observa la rapidez del oscurecimiento solar.
+   * **Respiración y postura viva en reposo (*Idle Breathing*):** Evita cualquier efecto de rigidez o estatua.
+
+---
+
+## 🌄 4. Escenas Clínicas del Entorno
 
 La experiencia cuenta con **2 escenas fijas de alto contraste lumínico**:
 
@@ -42,9 +67,9 @@ La experiencia cuenta con **2 escenas fijas de alto contraste lumínico**:
 
 ---
 
-## 🎛️ 4. Mecánica de Navegación y Controles
+## 🎛️ 5. Mecánica de Navegación y Controles
 
-### 4.1 Selector de Lentes (Lateral Izquierdo)
+### 5.1 Selector de Lentes (Lateral Izquierdo)
 * Ubicado verticalmente en el **costado izquierdo** de la interfaz.
 * **Agrupación visual por Familias de Generación:**
   * Los botones se organizan por familias tecnológicas.
@@ -54,14 +79,14 @@ La experiencia cuenta con **2 escenas fijas de alto contraste lumínico**:
     * 🔵 **Familia Transitions Style Mirrors:** Color distintivo C. (Espejados de moda: Azul Zafiro, Plata, Bronce/Oro).
     * ⚪ **Familia Fotocromático Genérico (Trinity / Estándar):** Color neutro / gris de contraste. (Muestra la activación más lenta y el tope limitado en Cat. 2).
 
-### 4.2 Persistencia del Lente al Cambiar de Escena
+### 5.2 Persistencia del Lente al Cambiar de Escena
 * Cuando el usuario cambia de escena (de Parque a Museo o viceversa):
   * **El lente seleccionado NO cambia** (se conserva la selección actual).
   * **La intensidad de oscurecimiento se transforma dinámicamente:**
     * Si pasa del Parque al Museo: el cristal se va aclarando gradualmente frente a los ojos del paciente y en el avatar.
     * Si pasa del Museo al Parque: el cristal se va oscureciendo según la curva cinética del lente activo.
 
-### 4.3 Medidor / Slider de Intensidad Dinámico (Read-Only)
+### 5.3 Medidor / Slider de Intensidad Dinámico (Read-Only)
 * Un indicador visual (barra / slider / HUD) que muestra en tiempo real el porcentaje de oscuridad y la categoría óptica (Cat. 0 a Cat. 3).
 * **Comportamiento:**
   * **Es variable:** Su valor sube o baja automáticamente siguiendo la física del cristal en la escena activa.
@@ -69,19 +94,25 @@ La experiencia cuenta con **2 escenas fijas de alto contraste lumínico**:
 
 ---
 
-## 👤 5. Implementación del Avatar
+## ⏱️ 6. Temporizador de Inactividad (Modo Kiosco / Gabinete Clínico)
 
-Para generar el avatar con sus gafas a partir de una fotografía:
-1. **Modelo Facial:** Rostro representativo con orientación frontal/tres cuartos.
-2. **Gafas Fotocromáticas Reactivas:** Lentes que reciben el tinte, la opacidad y los reflejos calculados por el motor cinético.
-3. **Flujos de Integración según la Foto del Usuario:**
-   * **Flujo 3D (Three.js):** Carga de modelo `.glb` optimizado generado a partir de la foto con gafas 3D paramétricas superpuestas.
-   * **Flujo 2.5D Hiperrealista (Canvas/SVG):** Fotografía del paciente con máscara vectorial de cristales ópticos donde se renderizan capas de absorción lumínica, reflejo especular y coloración en tiempo real a 60 FPS.
+* **Retorno Automático a Portada (5 Minutos):**
+  * Si la pantalla no registra toques, clics ni movimiento de ratón durante **5 minutos (300.000 ms)**, la aplicación realiza un retorno suave a la portada de bienvenida.
+  * **Reinicio de Estado Limpio:**
+    * El avatar regresa a su tamaño grande central.
+    * La simulación se reinicia en estado transparente inicial.
+    * Garantiza que la tablet o pantalla táctil de la óptica siempre esté lista, atractiva y fresca para el siguiente paciente sin necesidad de reiniciarla manualmente.
 
 ---
 
-## 🚀 6. Configuración de Repositorio
+## 🌿 7. Estrategia de Ramas Git y Despliegue CI/CD
 
-* **URL Remota:** `https://github.com/visiometric-labs/transitions-simulator.git`
-* **Rama Principal:** `main`
-* **Licencia & Créditos:** JayzirTech / Visiometric Labs
+* **Rama por Defecto (`dev`):**
+  * Todo el desarrollo diario, pruebas y características se realizan en la rama `dev`.
+* **Rama de Producción y Despliegue (`main`):**
+  * La rama `main` está reservada exclusivamente para versiones estables listas para producción.
+  * El workflow `.github/workflows/deploy.yml` compila con `vite build --base=/transitions-simulator/` y despliega automáticamente a **GitHub Pages** únicamente ante pushes a `main`.
+
+---
+
+*Documento maestro actualizado y sincronizado en el repositorio.*
