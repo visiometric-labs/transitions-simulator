@@ -107,13 +107,17 @@ A fecha de hoy, la base de la aplicación se encuentra **100% funcional, compila
    - `src/components/lens-selector.js`: Selector lateral por familias morada, ámbar, azul y gris.
    - `src/components/avatar-widget.js`: Mini-espejo reactivo con tintado sincronizado y aplausos.
 6. **Compilación de Producción:**
-   - Verificada exitosamente con `npx vite build --base=/transitions-simulator/` en 363ms.
+7. **Motor 3D Real Three.js y Modelo `.glb` Integrado:**
+   - Modelo real descargado e incorporado en `public/avatar/avatar.glb` (4.7 MB, con 78 huesos y malla independiente `Wolf3D_Glasses`).
+   - `src/core/avatar-3d-engine.js`: Renderizado WebGL a 60 FPS con fondo transparente (`alpha: true`), iluminación de estudio PBR, seguimiento esquelético de cabeza y cuello hacia el cursor (`Head`, `Neck`), respiración viva continua (`Spine2`) y pestañeo involuntario con morph targets (`eyeBlinkLeft`, `eyeBlinkRight`).
+   - Tintado físico PBR sobre las gafas: El material de `Wolf3D_Glasses` ajusta en tiempo real su transmisión, opacidad, reflectividad y color espectral según la curva cinética del lente fotosensible seleccionado.
+8. **Compilación de Producción:**
+   - Verificada exitosamente con `npx vite build --base=/transitions-simulator/`.
 
 ---
 
 ## 📋 8. Próximos Pasos para la Siguiente Sesión
 
-1. **Revisión y feedback del usuario** sobre la estética y tiempos cinéticos.
-2. **Opcional - Importación de modelo `.glb` con Three.js:** Si el usuario descarga un avatar 3D `.glb` desde Ready Player Me o Hyper3D, se puede sustituir la capa de imagen reactiva por un canvas Three.js con `GLTFLoader` y animación esquelética.
-3. **Pruebas en dispositivo táctil / tablet de consulta optométrica.**
-4. **Merge a `main`:** Cuando el usuario dé el visto bueno final, combinar de `dev` a `main` para despliegue automático en GitHub Pages.
+1. **Revisión y feedback del usuario** sobre la estética, el avatar 3D y tiempos cinéticos.
+2. **Pruebas en dispositivo táctil / tablet de consulta optométrica.**
+3. **Verificación final en producción** en GitHub Pages.
