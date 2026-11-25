@@ -19,6 +19,7 @@
   * Al iniciar la aplicación, el avatar 3D aparece en primer plano (tamaño grande/hero).
   * Lleva puestas las gafas y realiza micro-expresiones aleatorias continuas (parpadeos, sonrisas, gestos de bienvenida o asombro).
   * Invita al paciente a pulsar el botón central **"Iniciar Experiencia"** / Pantalla Completa.
+  * **Referencia visual:** `docs/mockups/portada-landing-mockup.jpg`
 
 ### 2.2 Transición Cinemática hacia la Experiencia
 * Al presionar "Iniciar Experiencia":
@@ -31,8 +32,9 @@
   * Renderizado cinemático con marco de montura y visión periférica exterior comparativa.
 * **Avatar Mediano Integrado (Mini-Espejo / Vista en 3ª Persona):**
   * Ubicado en un cuadrante visible y elegante de la pantalla (widget/tarjeta flotante).
-  * Muestra al avatar con las gafas puestas.
+  * Muestra al avatar con las gafas puestas (aplaudiendo, sonriendo o reaccionando a la luz).
   * **Reacción en tiempo real:** Los cristales de las gafas del avatar adoptan el mismo color, tonalidad y porcentaje de oscurecimiento seleccionado, permitiendo evaluar cómo luce el lente sobre el rostro al mismo tiempo que se experimenta la visión POV.
+  * **Referencia visual:** `docs/mockups/interfaz-experiencia-mockup.jpg`
 
 ---
 
