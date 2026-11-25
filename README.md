@@ -27,6 +27,7 @@ Permite al paciente experimentar de forma vívida e interactiva la diferencia en
   - **Mirar hacia Arriba**: Permite mirar directamente por encima de la montura al sol deslumbrante sin filtro.
   - **Mirar al Centro**: El paciente vuelve a cubrir su línea de visión con el lente fotosensible, experimentando el confort inmediato.
   - **Mirar a los Lados**: Comparativa directa de visión periférica descubierta vs. visión central protegida.
+  - **Sincronización Óptica Unificada al Sub-Píxel**: Fondo exterior (`SceneManager`) e interior (`GlassesPOV`) unificados en proyección SVG idéntica (`viewBox 1920x1080 preserveAspectRatio="xMidYMid slice"`) con los mismos límites de encuadre (`width="2240" height="1250"`). El mundo exterior y el mundo filtrado interior comparten exactamente el mismo paneo (`worldPanX = -gazeX * 120`, `worldPanY = -gazeY * 70`), eliminando cualquier corte, retraso de 80ms o salto de escala al atravesar el borde del cristal.
   - **Recentrado Inmediato**: Botón flotante dinámico y doble toque/clic para volver al centro.
 
 ### 2. Avatar Facial 3D Real (Three.js + WebGL)

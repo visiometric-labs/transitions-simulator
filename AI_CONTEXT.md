@@ -51,7 +51,11 @@ A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico comp
   - Al inclinar la vista hacia arriba (`pitch > 0`, `gazeY < 0`), el usuario mira **directamente por encima de las gafas** hacia el sol cegador.
   - Al regresar al centro, el usuario experimenta el alivio inmediato del lente.
   - Botón flotante para recentrar la mirada a voluntad (`#btn-recenter-gaze`) o doble toque/doble clic.
-  - Sincronización de coordenadas con paralaje dinámico entre fondo panorámico y los cristales.
+* **Sincronización Óptica y Proyección Unificada al Sub-Píxel**:
+  - Tanto el fondo exterior (`SceneManager`) como la vista interior de los cristales (`GlassesPOV`) comparten la misma proyección vectorial SVG con `viewBox="0 0 1920 1080"` y `preserveAspectRatio="xMidYMid slice"`.
+  - Ambas capas emplean las mismas dimensiones y encuadre base (`x="-160" y="-85" width="2240" height="1250"`), garantizando que en reposo o movimiento cualquier elemento del paisaje (árboles, sendero, edificios) coincida con precisión milimétrica sin cortes ni saltos de escala al cruzar el borde del lente.
+  - El paneo del mundo se actualiza instantáneamente en cada fotograma (`worldPanX = -gazeX * 120`, `worldPanY = -gazeY * 70`) sin transiciones diferidas CSS (`0.08s ease-out` eliminado).
+  - La montura y la apertura binocular (`<clipPath id="lenses-binocular-clip">`) se mueven de forma coordinada con la cabeza, mientras que la imagen dentro del cristal permanece fija en las coordenadas del mundo real.
 
 ### B. Ausencia Absoluta de Efectos de Sonido
 * La aplicación es 100% silenciosa en todas sus interacciones, clics y transiciones, garantizando un entorno profesional sin ruidos inesperados en la consulta optométrica.
