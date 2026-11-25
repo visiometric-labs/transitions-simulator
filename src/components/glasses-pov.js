@@ -19,6 +19,7 @@ export class GlassesPOV {
 
     this.render();
     this.bindEvents();
+    this.updateLensVisuals(this.currentLens, simulatorState.currentAbsorption);
     this.startGazeLoop();
   }
 
@@ -49,20 +50,20 @@ export class GlassesPOV {
         <defs>
           <!-- Máscara Binocular Panorámica para el Recorte de Lentes (Se mueve con las gafas) -->
           <clipPath id="lenses-binocular-clip">
-            <g id="clip-glasses-transform-group">
-              <!-- Agujero Lente Izquierdo -->
-              <path d="M 230 290
-                       C 480 250, 800 260, 935 340
-                       C 955 450, 940 700, 880 770
-                       C 760 840, 420 830, 260 760
-                       C 190 680, 170 420, 230 290 Z" />
-              <!-- Agujero Lente Derecho -->
-              <path d="M 985 340
-                       C 1120 260, 1440 250, 1690 290
-                       C 1750 420, 1730 680, 1660 760
-                       C 1500 830, 1160 840, 1040 770
-                       C 980 700, 965 450, 985 340 Z" />
-            </g>
+            <!-- Agujero Lente Izquierdo -->
+            <path id="left-lens-clip-path"
+                  d="M 230 290
+                     C 480 250, 800 260, 935 340
+                     C 955 450, 940 700, 880 770
+                     C 760 840, 420 830, 260 760
+                     C 190 680, 170 420, 230 290 Z" />
+            <!-- Agujero Lente Derecho -->
+            <path id="right-lens-clip-path"
+                  d="M 985 340
+                     C 1120 260, 1440 250, 1690 290
+                     C 1750 420, 1730 680, 1660 760
+                     C 1500 830, 1160 840, 1040 770
+                     C 980 700, 965 450, 985 340 Z" />
           </clipPath>
 
           <!-- Filtro de Desenfoque Fisiológico Leve en el Marco cercano (DoF) -->
@@ -131,6 +132,11 @@ export class GlassesPOV {
                   fill="rgb(110, 45, 190)" 
                   style="mix-blend-mode: multiply; opacity: 0.14; transition: opacity 0.15s linear, fill 0.35s ease;" />
             
+            <!-- Capa de Realce Cromático Espectral (Garantiza color vivo e inconfundible en todos los dispositivos) -->
+            <rect id="lens-color-wash-layer" x="-160" y="-85" width="2240" height="1250" 
+                  fill="rgb(110, 45, 190)" 
+                  style="opacity: 0.05; transition: opacity 0.15s linear, fill 0.35s ease;" />
+
             <!-- Capa de Efecto Espejo Flash (Style Mirrors) -->
             <rect id="lens-mirror-layer" x="-160" y="-85" width="2240" height="1250" 
                   fill="url(#mirrorSheenGrad)" 
@@ -218,13 +224,57 @@ export class GlassesPOV {
     this.container.appendChild(this.element);
 
     this.lensWorldPanGroup = this.element.querySelector('#lens-world-pan-group');
-    this.clipGlassesTransformGroup = this.element.querySelector('#clip-glasses-transform-group');
+    this.leftLensClipPath = this.element.querySelector('#left-lens-clip-path');
+    this.rightLensClipPath = this.element.querySelector('#right-lens-clip-path');
     this.glassesFrameTransformGroup = this.element.querySelector('#glasses-frame-transform-group');
     this.lensScenePark = this.element.querySelector('#lens-scene-park');
     this.lensSceneMuseum = this.element.querySelector('#lens-scene-museum');
     this.lensTintLayer = this.element.querySelector('#lens-tint-layer');
+    this.lensColorWashLayer = this.element.querySelector('#lens-color-wash-layer');
     this.lensMirrorLayer = this.element.querySelector('#lens-mirror-layer');
     this.allSceneImages = [this.lensScenePark, this.lensSceneMuseum];
+  }
+
+  updateLensVisuals(lens, absorption) {
+    if (!lens) return;
+
+    // 1. Filtrado óptico sin deslumbramiento: Brillo descansado, contraste y saturación enriquecidos
+    const brightness = Math.max(0.66, 0.90 - (absorption * 0.24));
+    const contrast = 1.15 + (absorption * 0.18);
+    const saturate = 1.15 + (absorption * 0.22);
+    const filterCss = `brightness(${brightness.toFixed(2)}) contrast(${contrast.toFixed(2)}) saturate(${saturate.toFixed(2)})`;
+    
+    this.allSceneImages.forEach(img => {
+      if (img) img.style.filter = filterCss;
+    });
+
+    // 2. Tinte cromático fotosensible de alta fidelidad clínica:
+    // Capa multiply: oscurece con la absorción fotocromática profunda
+    // Capa wash: aporta el cromatismo auténtico (Ruby, Sapphire, Emerald, Amber, Amethyst, Gray)
+    const [r, g, b] = lens.tintRgb;
+    const tintFill = `rgb(${r}, ${g}, ${b})`;
+
+    if (this.lensTintLayer) {
+      this.lensTintLayer.setAttribute('fill', tintFill);
+      const multiplyOpacity = Math.max(0.12, Math.min(0.72, 0.10 + (absorption * 0.70)));
+      this.lensTintLayer.style.opacity = multiplyOpacity.toFixed(2);
+    }
+
+    if (this.lensColorWashLayer) {
+      this.lensColorWashLayer.setAttribute('fill', tintFill);
+      const washOpacity = Math.max(0.04, Math.min(0.28, 0.03 + (absorption * 0.28)));
+      this.lensColorWashLayer.style.opacity = washOpacity.toFixed(2);
+    }
+
+    // 3. Efecto espejo (Style Mirrors)
+    if (this.lensMirrorLayer) {
+      if (lens.mirrorEffect) {
+        const mirrorOpacity = Math.min(0.50, absorption * 0.55);
+        this.lensMirrorLayer.style.opacity = mirrorOpacity.toFixed(2);
+      } else {
+        this.lensMirrorLayer.style.opacity = '0';
+      }
+    }
   }
 
   bindEvents() {
@@ -235,38 +285,17 @@ export class GlassesPOV {
       if (this.lensSceneMuseum) this.lensSceneMuseum.style.opacity = isPark ? '0' : '1';
     });
 
+    // Cambio instantáneo de tinte al pulsar una nueva lente
+    eventBus.on('lens:change', ({ lens }) => {
+      if (!lens) return;
+      this.currentLens = lens;
+      this.updateLensVisuals(lens, simulatorState.currentAbsorption);
+    });
+
     // Actualización Cinética Continua en Tiempo Real
     eventBus.on('kinetic:update', ({ absorption, lens }) => {
       if (!lens) return;
-
-      // 1. Filtrado óptico sin deslumbramiento: Brillo descansado, contraste y saturación enriquecidos
-      const brightness = Math.max(0.68, 0.90 - (absorption * 0.22));
-      const contrast = 1.15 + (absorption * 0.15);
-      const saturate = 1.15 + (absorption * 0.18);
-      const filterCss = `brightness(${brightness.toFixed(2)}) contrast(${contrast.toFixed(2)}) saturate(${saturate.toFixed(2)})`;
-      
-      this.allSceneImages.forEach(img => {
-        if (img) img.style.filter = filterCss;
-      });
-
-      // 2. Tinte cromático fotosensible suave (multiply translúcido)
-      const [r, g, b] = lens.tintRgb;
-      const tintFill = `rgb(${r}, ${g}, ${b})`;
-      if (this.lensTintLayer) {
-        this.lensTintLayer.setAttribute('fill', tintFill);
-        const tintOpacity = Math.max(0.10, Math.min(0.58, absorption * 0.62));
-        this.lensTintLayer.style.opacity = tintOpacity.toFixed(2);
-      }
-
-      // 3. Efecto espejo (Style Mirrors)
-      if (this.lensMirrorLayer) {
-        if (lens.mirrorEffect) {
-          const mirrorOpacity = Math.min(0.48, absorption * 0.52);
-          this.lensMirrorLayer.style.opacity = mirrorOpacity.toFixed(2);
-        } else {
-          this.lensMirrorLayer.style.opacity = '0';
-        }
-      }
+      this.updateLensVisuals(lens, absorption);
     });
 
     // Filtro estricto para ignorar toques/clics sobre botones o tarjetas interactivas
@@ -495,8 +524,11 @@ export class GlassesPOV {
         const glassesRotate = gazeX * 1.4;
         const glassesTransform = `translate(${glassesOffsetX.toFixed(1)}, ${glassesOffsetY.toFixed(1)}) rotate(${glassesRotate.toFixed(1)} 960 540)`;
 
-        if (this.clipGlassesTransformGroup) {
-          this.clipGlassesTransformGroup.setAttribute('transform', glassesTransform);
+        if (this.leftLensClipPath) {
+          this.leftLensClipPath.setAttribute('transform', glassesTransform);
+        }
+        if (this.rightLensClipPath) {
+          this.rightLensClipPath.setAttribute('transform', glassesTransform);
         }
         if (this.glassesFrameTransformGroup) {
           this.glassesFrameTransformGroup.setAttribute('transform', glassesTransform);
