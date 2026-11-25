@@ -37,13 +37,26 @@ export class HudHeader {
         </div>
       </div>
 
-      <!-- 3. Conmutador de Escenas Clínicas (Superior Derecha) -->
-      <div class="scene-switcher-container" role="radiogroup" aria-label="Selección de Escena Clínica">
-        <button id="scene-btn-park" class="scene-btn active" type="button" role="radio" aria-checked="true">
-          Parque Familiar
-        </button>
-        <button id="scene-btn-museum" class="scene-btn" type="button" role="radio" aria-checked="false">
-          Museo de Arte
+      <!-- 3. Acciones Derecha (Conmutador de Escenas + Botón Salir/Entrar Pantalla Completa) -->
+      <div class="hud-actions-right">
+        <!-- Conmutador de Escenas Clínicas -->
+        <div class="scene-switcher-container" role="radiogroup" aria-label="Selección de Escena Clínica">
+          <button id="scene-btn-park" class="scene-btn active" type="button" role="radio" aria-checked="true">
+            Parque Familiar
+          </button>
+          <button id="scene-btn-museum" class="scene-btn" type="button" role="radio" aria-checked="false">
+            Museo de Arte
+          </button>
+        </div>
+
+        <!-- Botón Salir / Entrar Pantalla Completa en Cabina -->
+        <button id="btn-hud-fullscreen" class="btn-fullscreen-toggle" type="button" title="Pantalla completa / Salir de pantalla completa" aria-label="Alternar pantalla completa">
+          <svg class="fs-icon-enter" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+          <svg class="fs-icon-exit" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display: none;">
+            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+          </svg>
         </button>
       </div>
     `;
@@ -55,6 +68,9 @@ export class HudHeader {
     const returnBtn = this.element.querySelector('#btn-return-landing');
     const parkBtn = this.element.querySelector('#scene-btn-park');
     const museumBtn = this.element.querySelector('#scene-btn-museum');
+    const fsBtn = this.element.querySelector('#btn-hud-fullscreen');
+    const iconEnter = fsBtn.querySelector('.fs-icon-enter');
+    const iconExit = fsBtn.querySelector('.fs-icon-exit');
     const meterFill = this.element.querySelector('#meter-fill');
     const meterText = this.element.querySelector('#meter-text');
     const meterUv = this.element.querySelector('#meter-uv-val');
@@ -73,6 +89,29 @@ export class HudHeader {
     museumBtn.addEventListener('click', () => {
       simulatorState.setScene('museum');
     });
+
+    // Control de pantalla completa
+    const updateFsIcon = () => {
+      const isFs = !!document.fullscreenElement;
+      if (isFs) {
+        iconEnter.style.display = 'none';
+        iconExit.style.display = 'block';
+      } else {
+        iconEnter.style.display = 'block';
+        iconExit.style.display = 'none';
+      }
+    };
+
+    fsBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    document.addEventListener('fullscreenchange', updateFsIcon);
+    updateFsIcon();
 
     // Actualización de estado de escena
     eventBus.on('scene:change', ({ sceneId }) => {

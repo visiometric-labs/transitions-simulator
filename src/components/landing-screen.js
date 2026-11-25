@@ -36,6 +36,16 @@ export class LandingScreen {
             <span class="landing-brand-sub">by Visiometric Labs</span>
           </div>
         </div>
+
+        <!-- Botón para Salir / Entrar a Pantalla Completa en Portada -->
+        <button id="btn-landing-fullscreen" class="btn-fullscreen-toggle" type="button" title="Pantalla completa / Salir de pantalla completa" aria-label="Alternar pantalla completa">
+          <svg class="fs-icon-enter" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+          <svg class="fs-icon-exit" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display: none;">
+            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+          </svg>
+        </button>
       </header>
 
       <!-- Indicadores Laterales HUD -->
@@ -91,9 +101,31 @@ export class LandingScreen {
         </div>
       </aside>
 
-      <!-- Avatar Hero Central (En primer plano grande con respiración viva) -->
+      <!-- Avatar Hero Central (Fondo transparente + Animación interactiva estilo My Talking Cat) -->
       <div class="landing-hero-center">
-        <img class="landing-avatar-image" src="./avatar/avatar-hero.jpg" alt="Avatar Luminix" />
+        <div id="landing-avatar-body" class="landing-avatar-body" title="¡Haz clic en el avatar para interactuar!">
+          <img class="landing-avatar-image" src="./avatar/avatar-hero.png" alt="Avatar Luminix" />
+          
+          <!-- Capa SVG que tiñe ÚNICAMENTE los cristales de las gafas -->
+          <svg class="landing-avatar-lens-overlay" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="hero-spectacle-lenses">
+                <!-- Lente Izquierdo del Avatar -->
+                <ellipse cx="415" cy="445" rx="72" ry="54" />
+                <!-- Lente Derecho del Avatar -->
+                <ellipse cx="612" cy="445" rx="72" ry="54" />
+              </clipPath>
+            </defs>
+            <g clip-path="url(#hero-spectacle-lenses)">
+              <rect id="hero-lens-tint" x="0" y="0" width="1024" height="1024" 
+                    fill="rgb(110, 45, 190)" 
+                    style="mix-blend-mode: multiply; opacity: 0.12; transition: opacity 0.3s ease, fill 0.3s ease;" />
+              <rect id="hero-lens-glare" x="0" y="0" width="1024" height="1024" 
+                    fill="url(#cyanCurveGrad)" 
+                    style="mix-blend-mode: screen; opacity: 0.08;" />
+            </g>
+          </svg>
+        </div>
       </div>
 
       <!-- Pie de Página y Botón CTA Central -->
@@ -107,6 +139,12 @@ export class LandingScreen {
           <span class="cta-text">INICIAR EXPERIENCIA</span>
         </button>
         <span class="cta-subtitle">Toque para comenzar la demostración clínica</span>
+
+        <!-- Derechos de Autor Institucionales -->
+        <div class="landing-copyright">
+          <div>© <span id="copyright-year">2026</span> JayzirTech. Todos los derechos reservados. • Luminix by Visiometric Labs</div>
+          <div class="copyright-sub">Plataforma clínica de demostración fotosensible y probador Transitions® en mostrador.</div>
+        </div>
       </footer>
     `;
 
@@ -115,33 +153,117 @@ export class LandingScreen {
 
   bindEvents() {
     const startBtn = this.element.querySelector('#cta-start-experience');
+    const fsBtn = this.element.querySelector('#btn-landing-fullscreen');
+    const iconEnter = fsBtn.querySelector('.fs-icon-enter');
+    const iconExit = fsBtn.querySelector('.fs-icon-exit');
+    const avatarBody = this.element.querySelector('#landing-avatar-body');
+    const yearEl = this.element.querySelector('#copyright-year');
+
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+
     startBtn.addEventListener('click', () => {
       this.handleStartExperience();
+    });
+
+    // Control de pantalla completa
+    const updateFsIcon = () => {
+      const isFs = !!document.fullscreenElement;
+      if (isFs) {
+        iconEnter.style.display = 'none';
+        iconExit.style.display = 'block';
+      } else {
+        iconEnter.style.display = 'block';
+        iconExit.style.display = 'none';
+      }
+    };
+
+    fsBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    document.addEventListener('fullscreenchange', updateFsIcon);
+
+    // Movimiento Interactivo tipo "Talking Cat" con seguimiento de mirada y cursor
+    window.addEventListener('mousemove', (e) => {
+      if (simulatorState.screen !== 'landing') return;
+      const xNorm = (e.clientX / window.innerWidth) - 0.5;
+      const yNorm = (e.clientY / window.innerHeight) - 0.5;
+      
+      const rotY = xNorm * 12; // Giro sutil hacia el cursor
+      const rotX = -yNorm * 8; // Inclinación hacia arriba/abajo
+      
+      avatarBody.style.transform = `perspective(600px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+    }, { passive: true });
+
+    // Clic interactivo en el Avatar (Reacción divertida con audio)
+    avatarBody.addEventListener('click', () => {
+      this.playAvatarPokeReaction(avatarBody);
     });
 
     eventBus.on('screen:change', ({ screen }) => {
       if (screen === 'landing') {
         this.element.classList.remove('screen-hidden');
         this.element.classList.add('screen-visible');
+        updateFsIcon();
       } else {
         this.element.classList.remove('screen-visible');
         this.element.classList.add('screen-hidden');
       }
     });
+
+    // Sincronizar tinte de los lentes en el avatar si se prueba lente
+    eventBus.on('kinetic:update', ({ absorption, lens }) => {
+      const heroTint = this.element.querySelector('#hero-lens-tint');
+      if (heroTint && lens) {
+        const [r, g, b] = lens.tintRgb;
+        heroTint.setAttribute('fill', `rgb(${r}, ${g}, ${b})`);
+        heroTint.style.opacity = (Math.max(0.12, absorption * 0.70)).toFixed(2);
+      }
+    });
+  }
+
+  playAvatarPokeReaction(avatarEl) {
+    // Animación de sorpresa/salto estilo Talking Cat
+    avatarEl.style.transform = 'perspective(600px) translateY(-18px) scale(1.05)';
+    setTimeout(() => {
+      avatarEl.style.transform = 'perspective(600px) translateY(0px) scale(1)';
+    }, 280);
+
+    // Audio de risa / alegría sintetizada
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(720, audioCtx.currentTime + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(560, audioCtx.currentTime + 0.30);
+
+      gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.16, audioCtx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.36);
+    } catch {}
   }
 
   handleStartExperience() {
-    // Solicitud de pantalla completa en tablet/pantalla de óptica si es soportado
     if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.warn('Pantalla completa no disponible o denegada:', err);
-      });
+      document.documentElement.requestFullscreen().catch(() => {});
     }
 
-    // Efecto de sonido sintetizado clínico estéreo
     this.playStartChime();
-
-    // Transicionar al estado de experiencia
     simulatorState.setScreen('experience');
   }
 
@@ -164,8 +286,6 @@ export class LandingScreen {
 
       osc.start();
       osc.stop(audioCtx.currentTime + 0.56);
-    } catch {
-      // Audio silencioso si no está habilitado
-    }
+    } catch {}
   }
 }

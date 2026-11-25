@@ -15,39 +15,39 @@ export class GlassesPOV {
     this.element = document.createElement('div');
     this.element.className = 'glasses-pov-layer';
 
-    // SVG 1920x1080 Full HD con máscaras de recorte para los dos cristales ópticos independientes
+    // SVG 1920x1080 con apertura binocular panorámica natural y puente estilizado de 50px
     this.element.innerHTML = `
       <svg id="glasses-pov-svg" width="100%" height="100%" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <!-- Máscara Lente Izquierdo -->
+          <!-- Máscara Lente Izquierdo (Apertura panorámica amplia) -->
           <clipPath id="left-lens-clip">
-            <path d="M 430 350
-                     C 630 320, 840 330, 895 380
-                     C 915 470, 890 640, 855 680
-                     C 790 750, 520 740, 425 675
-                     C 385 620, 375 440, 430 350 Z" />
+            <path d="M 230 290
+                     C 480 250, 800 260, 935 340
+                     C 955 450, 940 700, 880 770
+                     C 760 840, 420 830, 260 760
+                     C 190 680, 170 420, 230 290 Z" />
           </clipPath>
 
-          <!-- Máscara Lente Derecho -->
+          <!-- Máscara Lente Derecho (Apertura panorámica amplia) -->
           <clipPath id="right-lens-clip">
-            <path d="M 1025 380
-                     C 1080 330, 1290 320, 1490 350
-                     C 1545 440, 1535 620, 1495 675
-                     C 1400 740, 1130 750, 1065 680
-                     C 1030 640, 1005 470, 1025 380 Z" />
+            <path d="M 985 340
+                     C 1120 260, 1440 250, 1690 290
+                     C 1750 420, 1730 680, 1660 760
+                     C 1500 830, 1160 840, 1040 770
+                     C 980 700, 965 450, 985 340 Z" />
           </clipPath>
 
           <!-- Filtro de Desenfoque Fisiológico Leve en el Marco cercano (DoF) -->
           <filter id="frame-dof-blur" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur stdDeviation="2.2" />
+            <feGaussianBlur stdDeviation="2.5" />
           </filter>
 
           <!-- Sombra Suave de Oclusión del Marco -->
           <filter id="frame-drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+            <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
             <feOffset dx="0" dy="6" result="offsetblur" />
             <feComponentTransfer>
-              <feFuncA type="linear" slope="0.45" />
+              <feFuncA type="linear" slope="0.40" />
             </feComponentTransfer>
             <feMerge>
               <feMergeNode />
@@ -73,9 +73,9 @@ export class GlassesPOV {
           <!-- Reflejo Espejado Dinámico (Style Mirrors) -->
           <linearGradient id="mirrorSheenGrad" x1="0%" y1="0%" x2="100%" y2="70%">
             <stop offset="0%" stop-color="rgba(255,255,255,0.7)" />
-            <stop offset="35%" stop-color="rgba(56,189,248,0.3)" />
+            <stop offset="35%" stop-color="rgba(56,189,248,0.35)" />
             <stop offset="70%" stop-color="rgba(255,255,255,0.05)" />
-            <stop offset="100%" stop-color="rgba(56,189,248,0.4)" />
+            <stop offset="100%" stop-color="rgba(56,189,248,0.45)" />
           </linearGradient>
         </defs>
 
@@ -85,21 +85,17 @@ export class GlassesPOV {
         
         <!-- Lente Izquierdo -->
         <g clip-path="url(#left-lens-clip)">
-          <!-- Imagen de Escena con Filtro Óptico / Absorción Solar -->
+          <!-- Imagen de Escena con Filtro Óptico (Brillo atenuado confortable, nunca negro) -->
           <image id="left-lens-scene-img" 
                  href="${this.currentScene.bgImage}" 
                  x="0" y="0" width="1920" height="1080" 
-                 preserveAspectRatio="xMidYMid slice" />
+                 preserveAspectRatio="xMidYMid slice" 
+                 style="filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: filter 0.2s linear;" />
           
-          <!-- Capa de Tinte Fotosensible Primario (Multiply) -->
+          <!-- Capa de Tinte Fotosensible Primario (Multiply suave con color real) -->
           <rect id="left-lens-tint" x="0" y="0" width="1920" height="1080" 
                 fill="rgb(110, 45, 190)" 
-                style="mix-blend-mode: multiply; opacity: 0.15; transition: opacity 0.12s linear, fill 0.35s ease;" />
-          
-          <!-- Capa de Densidad Solar Neutral (Oscurecimiento) -->
-          <rect id="left-lens-density" x="0" y="0" width="1920" height="1080" 
-                fill="#050811" 
-                style="opacity: 0.10; transition: opacity 0.12s linear;" />
+                style="mix-blend-mode: multiply; opacity: 0.12; transition: opacity 0.15s linear, fill 0.35s ease;" />
           
           <!-- Capa de Efecto Espejo Flash (Style Mirrors) -->
           <rect id="left-lens-mirror" x="0" y="0" width="1920" height="1080" 
@@ -107,27 +103,23 @@ export class GlassesPOV {
                 style="mix-blend-mode: overlay; opacity: 0; transition: opacity 0.3s ease;" />
 
           <!-- Reflejo Crizal Antirreflejo en Esquina Superior del Cristal -->
-          <ellipse cx="640" cy="380" rx="180" ry="25" transform="rotate(-12 640 380)" 
-                   fill="rgba(255,255,255,0.08)" style="mix-blend-mode: screen;" />
+          <ellipse cx="540" cy="330" rx="220" ry="25" transform="rotate(-10 540 330)" 
+                   fill="rgba(255,255,255,0.09)" style="mix-blend-mode: screen;" />
         </g>
 
         <!-- Lente Derecho -->
         <g clip-path="url(#right-lens-clip)">
-          <!-- Imagen de Escena con Filtro Óptico / Absorción Solar -->
+          <!-- Imagen de Escena con Filtro Óptico (Brillo atenuado confortable, nunca negro) -->
           <image id="right-lens-scene-img" 
                  href="${this.currentScene.bgImage}" 
                  x="0" y="0" width="1920" height="1080" 
-                 preserveAspectRatio="xMidYMid slice" />
+                 preserveAspectRatio="xMidYMid slice" 
+                 style="filter: brightness(0.92) contrast(1.05) saturate(1.10); transition: filter 0.2s linear;" />
           
-          <!-- Capa de Tinte Fotosensible Primario (Multiply) -->
+          <!-- Capa de Tinte Fotosensible Primario (Multiply suave con color real) -->
           <rect id="right-lens-tint" x="0" y="0" width="1920" height="1080" 
                 fill="rgb(110, 45, 190)" 
-                style="mix-blend-mode: multiply; opacity: 0.15; transition: opacity 0.12s linear, fill 0.35s ease;" />
-          
-          <!-- Capa de Densidad Solar Neutral (Oscurecimiento) -->
-          <rect id="right-lens-density" x="0" y="0" width="1920" height="1080" 
-                fill="#050811" 
-                style="opacity: 0.10; transition: opacity 0.12s linear;" />
+                style="mix-blend-mode: multiply; opacity: 0.12; transition: opacity 0.15s linear, fill 0.35s ease;" />
           
           <!-- Capa de Efecto Espejo Flash (Style Mirrors) -->
           <rect id="right-lens-mirror" x="0" y="0" width="1920" height="1080" 
@@ -135,8 +127,8 @@ export class GlassesPOV {
                 style="mix-blend-mode: overlay; opacity: 0; transition: opacity 0.3s ease;" />
 
           <!-- Reflejo Crizal Antirreflejo en Esquina Superior del Cristal -->
-          <ellipse cx="1280" cy="380" rx="180" ry="25" transform="rotate(12 1280 380)" 
-                   fill="rgba(255,255,255,0.08)" style="mix-blend-mode: screen;" />
+          <ellipse cx="1380" cy="330" rx="220" ry="25" transform="rotate(10 1380 330)" 
+                   fill="rgba(255,255,255,0.09)" style="mix-blend-mode: screen;" />
         </g>
 
         <!-- ============================================== -->
@@ -144,52 +136,52 @@ export class GlassesPOV {
         <!-- ============================================== -->
         <g id="glasses-frame-svg-group" filter="url(#frame-drop-shadow)">
           
-          <!-- Patilla Izquierda extendiéndose hacia fuera de pantalla -->
-          <path d="M 0 380 
-                   C 200 375, 340 370, 400 375
-                   L 410 425
-                   C 340 415, 180 420, 0 435 Z" 
+          <!-- Patilla Izquierda extendiéndose hacia la periferia -->
+          <path d="M 0 320 
+                   C 100 315, 170 310, 220 315
+                   L 230 365
+                   C 170 355, 90 360, 0 375 Z" 
                 fill="url(#acetateGradient)" filter="url(#frame-dof-blur)" />
           
-          <!-- Patilla Derecha extendiéndose hacia fuera de pantalla -->
-          <path d="M 1920 380 
-                   C 1720 375, 1580 370, 1520 375
-                   L 1510 425
-                   C 1580 415, 1740 420, 1920 435 Z" 
+          <!-- Patilla Derecha extendiéndose hacia la periferia -->
+          <path d="M 1920 320 
+                   C 1820 315, 1750 310, 1700 315
+                   L 1690 365
+                   C 1750 355, 1830 360, 1920 375 Z" 
                 fill="url(#acetateGradient)" filter="url(#frame-dof-blur)" />
 
-          <!-- Bisagras de Metal / Remaches Clásicos -->
-          <circle cx="390" cy="380" r="3.5" fill="#CBD5E1" opacity="0.9" />
-          <circle cx="400" cy="380" r="3.5" fill="#CBD5E1" opacity="0.9" />
-          <circle cx="1520" cy="380" r="3.5" fill="#CBD5E1" opacity="0.9" />
-          <circle cx="1530" cy="380" r="3.5" fill="#CBD5E1" opacity="0.9" />
+          <!-- Remaches clásicos de metal -->
+          <circle cx="210" cy="325" r="3" fill="#CBD5E1" opacity="0.9" />
+          <circle cx="218" cy="325" r="3" fill="#CBD5E1" opacity="0.9" />
+          <circle cx="1702" cy="325" r="3" fill="#CBD5E1" opacity="0.9" />
+          <circle cx="1710" cy="325" r="3" fill="#CBD5E1" opacity="0.9" />
 
-          <!-- Cuerpo Completo del Marco Frontal (Acetato Negro) -->
+          <!-- Cuerpo Completo del Marco Frontal (Puente sutil de 50px y orificios binoculares) -->
           <path d="
-            /* Borde Exterior del Marco */
-            M 360 330
-            C 630 300, 880 310, 940 395
-            C 955 410, 965 410, 980 395
-            C 1040 310, 1290 300, 1560 330
-            C 1610 370, 1615 480, 1560 670
-            C 1470 780, 1100 800, 990 680
-            C 975 660, 945 660, 930 680
-            C 820 800, 450 780, 360 670
-            C 305 480, 310 370, 360 330 Z
+            /* Silueta Exterior del Marco Panorámico */
+            M 180 270
+            C 480 230, 830 240, 945 340
+            C 955 350, 965 350, 975 340
+            C 1090 240, 1440 230, 1740 270
+            C 1800 340, 1810 500, 1750 750
+            C 1600 870, 1140 880, 980 770
+            C 970 755, 950 755, 940 770
+            C 780 880, 320 870, 170 750
+            C 110 500, 120 340, 180 270 Z
 
-            /* Agujero Lente Izquierdo (Hole Cutout) */
-            M 430 350
-            C 375 440, 385 620, 425 675
-            C 520 740, 790 750, 855 680
-            C 890 640, 915 470, 895 380
-            C 840 330, 630 320, 430 350 Z
+            /* Agujero Lente Izquierdo */
+            M 230 290
+            C 170 420, 190 680, 260 760
+            C 420 830, 760 840, 880 770
+            C 940 700, 955 450, 935 340
+            C 800 260, 480 250, 230 290 Z
 
-            /* Agujero Lente Derecho (Hole Cutout) */
-            M 1025 380
-            C 1005 470, 1030 640, 1065 680
-            C 1130 750, 1400 740, 1495 675
-            C 1535 620, 1545 440, 1490 350
-            C 1290 320, 1080 330, 1025 380 Z
+            /* Agujero Lente Derecho */
+            M 985 340
+            C 965 450, 980 700, 1040 770
+            C 1160 840, 1500 830, 1660 760
+            C 1730 680, 1750 420, 1690 290
+            C 1440 250, 1120 260, 985 340 Z
           "
           fill="url(#acetateGradient)"
           fill-rule="evenodd"
@@ -197,17 +189,17 @@ export class GlassesPOV {
           stroke-width="3"
           filter="url(#frame-dof-blur)" />
 
-          <!-- Biseles y Reflejos de Luz en el Borde Superior del Marco -->
-          <path d="M 370 335 C 630 305, 875 315, 935 395" 
+          <!-- Reflejo Superior de Luz en el Borde del Marco -->
+          <path d="M 190 275 C 480 235, 825 245, 940 342" 
                 fill="none" stroke="rgba(255, 255, 255, 0.28)" stroke-width="2" />
-          <path d="M 985 395 C 1045 315, 1290 305, 1550 335" 
+          <path d="M 980 342 C 1095 245, 1440 235, 1730 275" 
                 fill="none" stroke="rgba(255, 255, 255, 0.28)" stroke-width="2" />
 
-          <!-- Bisel interno facetado de los cristales -->
-          <path d="M 430 350 C 630 320, 840 330, 895 380 C 915 470, 890 640, 855 680 C 790 750, 520 740, 425 675 C 385 620, 375 440, 430 350 Z" 
+          <!-- Biseles internos facetados de los cristales -->
+          <path d="M 230 290 C 480 250, 800 260, 935 340 C 955 450, 940 700, 880 770 C 760 840, 420 830, 260 760 C 190 680, 170 420, 230 290 Z" 
                 fill="none" stroke="url(#facetBevelGrad)" stroke-width="1.8" />
           
-          <path d="M 1025 380 C 1080 330, 1290 320, 1490 350 C 1545 440, 1535 620, 1495 675 C 1400 740, 1130 750, 1065 680 C 1030 640, 1005 470, 1025 380 Z" 
+          <path d="M 985 340 C 1120 260, 1440 250, 1690 290 C 1750 420, 1730 680, 1660 760 C 1500 830, 1160 840, 1040 770 C 980 700, 965 450, 985 340 Z" 
                 fill="none" stroke="url(#facetBevelGrad)" stroke-width="1.8" />
         </g>
       </svg>
@@ -221,8 +213,6 @@ export class GlassesPOV {
     const rightSceneImg = this.element.querySelector('#right-lens-scene-img');
     const leftTint = this.element.querySelector('#left-lens-tint');
     const rightTint = this.element.querySelector('#right-lens-tint');
-    const leftDensity = this.element.querySelector('#left-lens-density');
-    const rightDensity = this.element.querySelector('#right-lens-density');
     const leftMirror = this.element.querySelector('#left-lens-mirror');
     const rightMirror = this.element.querySelector('#right-lens-mirror');
 
@@ -237,24 +227,28 @@ export class GlassesPOV {
     eventBus.on('kinetic:update', ({ absorption, lens }) => {
       if (!lens) return;
 
+      // 1. Filtrado óptico fotorrealista (Atenuación confortable de luminosidad: 0.74 a 0.95, NUNCA negro)
+      const brightness = Math.max(0.72, 1.0 - (absorption * 0.28));
+      const contrast = 1.0 + (absorption * 0.15);
+      const saturate = 1.0 + (absorption * 0.20);
+      const filterCss = `brightness(${brightness.toFixed(2)}) contrast(${contrast.toFixed(2)}) saturate(${saturate.toFixed(2)})`;
+      
+      leftSceneImg.style.filter = filterCss;
+      rightSceneImg.style.filter = filterCss;
+
+      // 2. Tinte cromático fotosensible suave (multiply translúcido que conserva 100% de los detalles)
       const [r, g, b] = lens.tintRgb;
       const tintFill = `rgb(${r}, ${g}, ${b})`;
-
-      // 1. Tinte cromático con modo multiply
       leftTint.setAttribute('fill', tintFill);
       rightTint.setAttribute('fill', tintFill);
-      const tintOpacity = Math.min(0.85, absorption * 0.95);
+      
+      const tintOpacity = Math.max(0.08, Math.min(0.48, absorption * 0.52));
       leftTint.style.opacity = tintOpacity.toFixed(2);
       rightTint.style.opacity = tintOpacity.toFixed(2);
 
-      // 2. Densidad solar neutra (bloqueo fotópico)
-      const densityOpacity = Math.max(0.05, (absorption - 0.15) * 0.9);
-      leftDensity.style.opacity = densityOpacity.toFixed(2);
-      rightDensity.style.opacity = densityOpacity.toFixed(2);
-
       // 3. Efecto espejo (Style Mirrors)
       if (lens.mirrorEffect) {
-        const mirrorOpacity = Math.min(0.70, absorption * 0.85);
+        const mirrorOpacity = Math.min(0.45, absorption * 0.50);
         leftMirror.style.opacity = mirrorOpacity.toFixed(2);
         rightMirror.style.opacity = mirrorOpacity.toFixed(2);
       } else {
@@ -265,6 +259,7 @@ export class GlassesPOV {
 
     // Micro-paralaje sutil en primera persona al mover el cursor
     window.addEventListener('mousemove', (e) => {
+      if (simulatorState.screen !== 'experience') return;
       const offsetX = (e.clientX / window.innerWidth - 0.5) * 12;
       const offsetY = (e.clientY / window.innerHeight - 0.5) * 8;
       const frameGroup = this.element.querySelector('#glasses-frame-svg-group');
