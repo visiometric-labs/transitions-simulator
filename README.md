@@ -22,7 +22,9 @@ Simulador clínico y probador interactivo de lentes fotosensibles (**Transitions
   - `dev`: Rama predeterminada de desarrollo.
   - `main`: Rama de despliegue exclusivo a GitHub Pages.
 
-Para consultar el documento completo, ver [CONCEPT.md](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/CONCEPT.md).
+Para consultar la especificación clínica detallada, ver [CONCEPT.md](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/CONCEPT.md).  
+Para que cualquier agente de IA o desarrollador continúe el proyecto con todas las reglas claras, ver [AI_CONTEXT.md](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/AI_CONTEXT.md).  
+Las referencias visuales aprobadas están guardadas en `docs/mockups/`.
 
 ---
 
