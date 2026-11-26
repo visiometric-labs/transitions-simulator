@@ -1,7 +1,8 @@
 # 🤖 AI_CONTEXT.md — Guía Maestra para Agentes de IA y Desarrolladores
 
 > **Documento de Contexto y Especificación Técnica para Luminix**  
-> Si eres una IA que retoma este proyecto o un desarrollador continuando el trabajo, **lee atentamente este archivo antes de realizar cualquier cambio**.
+> Si eres una IA que retoma este proyecto o un desarrollador continuando el trabajo, **lee atentamente este archivo antes de realizar cualquier cambio**.  
+> **Documentación de Usuario:** [🇪🇸 README.md (Español)](README.md) • [🇺🇸 README_EN.md (English)](README_EN.md)
 
 ---
 
@@ -81,9 +82,10 @@ A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico comp
 ### D. Portada Clínica, Selector de Tinte Sutil y Modo Kiosco
 * Archivos: `src/components/landing-screen.js`, `src/styles/landing.css`, `src/core/simulator-state.js`.
 * Sin sliders inertes; incluye fichas clínicas de la tecnología *Transitions® Gen S™* y la *Cabina de Demostración*.
-* Selector de tintes sutil (`.landing-hero-tint-bar`) ubicado justo debajo del marco del avatar con el mismo ancho exacto, permitiendo previsualizar tonalidades (Amatista, Rubí, Zafiro, Esmeralda, Ámbar, Gris) antes de entrar al simulador.
+* Selector de tintes sutil (`.landing-hero-tint-bar`) ubicado con **0 de separación (`gap: 0; margin: 0;`)** bajo el marco del avatar y con ancho calibrado al **103%**, permitiendo previsualizar tonalidades (Amatista, Rubí, Zafiro, Esmeralda, Ámbar, Gris) antes de entrar al simulador.
 * Botón de salir de pantalla completa condicional (solo visible si el navegador ya está en pantalla completa).
 * Temporizador de inactividad de **5 minutos** (configurable mediante parámetro URL `?timeout=2000` en milisegundos para pruebas rápidas) que regresa a la portada automáticamente con reseteo de escena y lente.
+* **Preservación de Pantalla Completa:** Al retornar automáticamente a la portada por inactividad, la aplicación **mantiene la pantalla completa activa** para no interrumpir el modo mostrador.
 * Soporte para `?autostart=true` para iniciar la simulación automáticamente tras la carga.
 
 ### E. Preloader Clínico y Transición Suave a Portada

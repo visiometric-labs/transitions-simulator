@@ -100,14 +100,24 @@ La experiencia cuenta con **2 escenas fijas de alto contraste lumínico**:
 
 * **Retorno Automático a Portada (5 Minutos):**
   * Si la pantalla no registra toques, clics ni movimiento de ratón durante **5 minutos (300.000 ms)**, la aplicación realiza un retorno suave a la portada de bienvenida.
+  * **Preservación de Pantalla Completa:** La aplicación permanece en pantalla completa sin salir al regresar automáticamente, asegurando continuidad estética en el mostrador.
+  * **Parámetro URL para Pruebas:** Admite `?timeout=2000` para configurar tiempos reducidos de inactividad (ej. 2 segundos) y `?autostart=true` para validación automatizada.
   * **Reinicio de Estado Limpio:**
     * El avatar regresa a su tamaño grande central.
-    * La simulación se reinicia en estado transparente inicial.
+    * La simulación se reinicia en estado transparente inicial (Parque Familiar, amatista, Cat. 0).
     * Garantiza que la tablet o pantalla táctil de la óptica siempre esté lista, atractiva y fresca para el siguiente paciente sin necesidad de reiniciarla manualmente.
 
 ---
 
-## 🌿 7. Estrategia de Ramas Git y Despliegue CI/CD
+## 🚀 7. Documentación Bilingüe y Despliegue
+
+* **Documentación en Español:** [`README.md`](README.md)
+* **Documentación en Inglés:** [`README_EN.md`](README_EN.md)
+* **Especificaciones Técnicas para Desarrolladores:** [`AI_CONTEXT.md`](AI_CONTEXT.md)
+
+---
+
+## 🌿 8. Estrategia de Ramas Git y Despliegue CI/CD
 
 * **Rama por Defecto (`dev`):**
   * Todo el desarrollo diario, pruebas y características se realizan en la rama `dev`.
