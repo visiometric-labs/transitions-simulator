@@ -310,7 +310,7 @@
 
 /* Selector Sutil de Tinte de Cristales para el Avatar en Portada (Mismo ancho que el marco del avatar) */
 .landing-hero-tint-bar {
-  width: 100%;
+  width: 103%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -502,7 +502,7 @@
     height: 360px;
   }
   .landing-hero-tint-bar {
-    width: 100%;
+    width: 103%;
     padding: 6px 14px;
     gap: 8px;
   }
@@ -526,7 +526,7 @@
     height: 320px;
   }
   .landing-hero-tint-bar {
-    width: 100%;
+    width: 103%;
     padding: 5px 12px;
   }
 }

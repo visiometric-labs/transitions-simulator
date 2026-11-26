@@ -134,12 +134,7 @@ class SimulatorState {
 
   handleKioskTimeout() {
     if (this.screen !== 'landing') {
-      console.log('⏰ Modo Kiosco: 5 minutos de inactividad completados. Regresando a la portada de bienvenida...');
-      
-      // Salir de pantalla completa si estaba activada
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      }
+      console.log(`⏰ Modo Kiosco: Inactividad de ${this.kioskTimeoutMs} ms detectada. Regresando a la portada manteniendo pantalla completa...`);
 
       // Restablecer configuraciones predeterminadas de simulación
       this.setScene('park');
