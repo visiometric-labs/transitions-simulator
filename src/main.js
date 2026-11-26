@@ -50,7 +50,7 @@ class LuminixApp {
 
     this.appContainer.appendChild(this.uiLayer);
 
-    // 5. Pantalla de Bienvenida / Portada Landing (Superpuesta)
+    // 5. Pantalla de Bienvenida / Portada Landing (Superpuesta detrás del preloader)
     new LandingScreen(this.appContainer);
 
     // 6. Arrancar Motor Cinético Fotocromático (60 FPS)
@@ -58,6 +58,17 @@ class LuminixApp {
 
     // 7. Atajos de Teclado Profesionales para Consulta Clínica
     this.setupKeyboardShortcuts();
+
+    // 8. Transición Suave: Disolver el preloader revelando la portada y el avatar ya renderizados
+    await preloader.fadeOut();
+
+    // 9. Parámetro de depuración opcional: ?autostart=true para iniciar simulación inmediatamente
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('autostart') === 'true' || urlParams.get('autostart') === '1') {
+      setTimeout(() => {
+        simulatorState.setScreen('experience');
+      }, 400);
+    }
 
     console.log('%c🕶️ Luminix by Visiometric Labs inicializado con éxito', 'color: #38BDF8; font-weight: bold; font-size: 14px;');
   }

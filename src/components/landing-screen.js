@@ -284,7 +284,7 @@ export class LandingScreen {
           if (simulatorState.screen !== 'landing') {
             this.element.style.display = 'none';
           }
-        }, 360);
+        }, 520);
       }
     });
   }
@@ -308,6 +308,6 @@ export class LandingScreen {
       if (simulatorState.screen === 'experience') {
         this.element.style.display = 'none';
       }
-    }, 360);
+    }, 520);
   }
 }

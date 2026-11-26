@@ -82,11 +82,19 @@ export class AppPreloader {
     updateUI();
     updateStatus('¡Calibración completada! Desplegando experiencia...');
 
-    await new Promise((r) => setTimeout(r, 220));
+    // Breve pausa para que el usuario aprecie el 100% de la carga
+    await new Promise((r) => setTimeout(r, 260));
+  }
 
-    // Desvanecer preloader suavemente
+  /**
+   * Disuelve suavemente la pantalla de carga revelando la portada montada detrás
+   */
+  async fadeOut() {
+    if (!this.element) return;
+
     this.element.classList.add('preloader-fade-out');
-    await new Promise((r) => setTimeout(r, 500));
+    // Duración coordinada con la transición CSS (0.75s)
+    await new Promise((r) => setTimeout(r, 750));
 
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);

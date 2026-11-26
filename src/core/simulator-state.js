@@ -13,13 +13,25 @@ class SimulatorState {
     this.isKineticActive = true;
     this.reactionAnimation = 'idle'; // 'idle' | 'clapping' | 'surprised'
     
-    // Kiosk timer (5 minutos = 300,000 ms)
+    // Kiosk timer (5 minutos = 300,000 ms por defecto, o configurable por URL ?timeout=)
     this.kioskTimeoutMs = 5 * 60 * 1000;
     this.kioskTimerId = null;
     this.lastInteractionTime = Date.now();
   }
 
   init() {
+    // Soporte para parámetro URL ?timeout= (ej: ?timeout=2000 para pruebas de retorno automático a portada)
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const timeoutParam = urlParams.get('timeout');
+      if (timeoutParam !== null && !isNaN(parseInt(timeoutParam, 10))) {
+        this.kioskTimeoutMs = Math.max(500, parseInt(timeoutParam, 10));
+        console.log(`⏰ Modo Kiosco: Timeout configurado a ${this.kioskTimeoutMs} ms por parámetro URL (?timeout=${timeoutParam})`);
+      }
+    } catch (e) {
+      console.warn('Error leyendo parámetros de URL para timeout:', e);
+    }
+
     this.resetKioskTimer();
     this.setupInteractionListeners();
   }
@@ -90,8 +102,9 @@ class SimulatorState {
 
     const onInteract = () => {
       this.lastInteractionTime = Date.now();
-      // Throttle el reinicio del temporizador para evitar sobrecarga en movimientos de puntero continuos
-      if (Date.now() - lastResetTime > 1000) {
+      // Throttle adaptativo: para pruebas con timeout corto (ej. 2000ms), recalibra a un tercio del timeout
+      const throttleMs = Math.min(1000, Math.floor(this.kioskTimeoutMs / 3));
+      if (Date.now() - lastResetTime > throttleMs) {
         lastResetTime = Date.now();
         this.resetKioskTimer();
       }

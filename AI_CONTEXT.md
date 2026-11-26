@@ -79,17 +79,18 @@ A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico comp
 * **Transición de 200 ms:** Tanto el fondo como el interior de los cristales binoculares realizan una progresión sincronizada de 200 ms.
 
 ### D. Portada Clínica, Selector de Tinte Sutil y Modo Kiosco
-* Archivos: `src/components/landing-screen.js`, `src/styles/landing.css`.
+* Archivos: `src/components/landing-screen.js`, `src/styles/landing.css`, `src/core/simulator-state.js`.
 * Sin sliders inertes; incluye fichas clínicas de la tecnología *Transitions® Gen S™* y la *Cabina de Demostración*.
 * Selector de tintes sutil (`.landing-hero-tint-bar`) ubicado justo debajo del marco del avatar con el mismo ancho exacto, permitiendo previsualizar tonalidades (Amatista, Rubí, Zafiro, Esmeralda, Ámbar, Gris) antes de entrar al simulador.
 * Botón de salir de pantalla completa condicional (solo visible si el navegador ya está en pantalla completa).
-* Temporizador de inactividad de **5 minutos** que regresa a la portada automáticamente con reseteo de escena y lente.
+* Temporizador de inactividad de **5 minutos** (configurable mediante parámetro URL `?timeout=2000` en milisegundos para pruebas rápidas) que regresa a la portada automáticamente con reseteo de escena y lente.
+* Soporte para `?autostart=true` para iniciar la simulación automáticamente tras la carga.
 
-### E. Preloader Clínico y Precarga Instantánea del Avatar 3D
-* Archivos: `src/components/preloader.js`, `src/core/avatar-model-cache.js`, `src/core/avatar-3d-engine.js`.
+### E. Preloader Clínico y Transición Suave a Portada
+* Archivos: `src/components/preloader.js`, `src/core/avatar-model-cache.js`, `src/core/avatar-3d-engine.js`, `src/main.js`.
 * Pantalla de precarga inicial con animación de retícula óptica, barra de progreso y porcentaje.
-* Precarga previa y clonación en memoria (`avatarModelCache.preload()` con `SkeletonUtils.clone`) del modelo GLB (4.7 MB) e imágenes base, eliminando cualquier demora al renderizar el avatar en la portada.
-* El avatar 3D real (`avatar.glb`, femenino) se renderiza directamente de forma síncrona en el primer fotograma tras el preloader, garantizando coherencia visual inmediata sin imágenes temporales estáticas ni parpadeos.
+* Precarga previa y clonación en memoria (`avatarModelCache.preload()` con `SkeletonUtils.clone`) del modelo GLB (4.7 MB) e imágenes base.
+* La portada y el avatar 3D real (`avatar.glb`, femenino) se montan y renderizan síncronamente detrás del preloader, y luego el preloader se disuelve con una transición óptica suave de 0.75s (desenfoque, escala sutil y desvanecimiento), eliminando cortes abruptos ("de golpe").
 
 ---
 
