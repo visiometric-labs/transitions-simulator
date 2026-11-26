@@ -160,12 +160,9 @@ export class Avatar3DEngine {
 
     this.scene.add(this.avatarModel);
 
-    // Si hay una imagen de placeholder temporal, ocultarla suavemente
-    if (this.container) {
-      const placeholder = this.container.querySelector('.landing-avatar-placeholder');
-      if (placeholder) {
-        placeholder.classList.add('loaded');
-      }
+    // Renderizado inmediato del primer fotograma para despliegue instantáneo sin parpadeo
+    if (this.renderer && this.scene && this.camera) {
+      this.renderer.render(this.scene, this.camera);
     }
 
     // Aplicar tinte inicial de la lente seleccionada (con previsualización nítida en portada)

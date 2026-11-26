@@ -308,26 +308,6 @@
   padding: 0;
 }
 
-/* Imagen de respaldo inmediata para eliminar cualquier segundo de espera */
-.landing-avatar-placeholder {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.35s ease-out, visibility 0.35s ease-out;
-  z-index: 1;
-}
-
-.landing-avatar-placeholder.loaded {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
 /* Selector Sutil de Tinte de Cristales para el Avatar en Portada (Mismo ancho que el marco del avatar) */
 .landing-hero-tint-bar {
   width: 100%;

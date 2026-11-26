@@ -160,7 +160,6 @@ export class LandingScreen {
       <div class="landing-hero-container">
         <!-- Avatar Hero Central (3D Real con Three.js y esqueleto .glb interactivo) -->
         <div id="landing-hero-stage" class="landing-hero-center">
-          <img id="landing-avatar-placeholder" src="./avatar/avatar-hero.png" class="landing-avatar-placeholder" alt="Luminix Avatar" />
           <!-- Canvas 3D de Three.js montado dinámicamente -->
         </div>
 

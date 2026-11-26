@@ -18,8 +18,6 @@ export class AppPreloader {
     this.imagesToPreload = [
       './scenes/parque-familiar.jpg',
       './scenes/museo-arte.jpg',
-      './avatar/avatar-hero.png',
-      './avatar/avatar-clapping.png',
       './branding/favicon.svg',
     ];
   }

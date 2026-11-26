@@ -86,9 +86,10 @@ A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico comp
 * Temporizador de inactividad de **5 minutos** que regresa a la portada automáticamente con reseteo de escena y lente.
 
 ### E. Preloader Clínico y Precarga Instantánea del Avatar 3D
-* Archivos: `src/components/preloader.js`, `src/core/avatar-model-cache.js`.
+* Archivos: `src/components/preloader.js`, `src/core/avatar-model-cache.js`, `src/core/avatar-3d-engine.js`.
 * Pantalla de precarga inicial con animación de retícula óptica, barra de progreso y porcentaje.
 * Precarga previa y clonación en memoria (`avatarModelCache.preload()` con `SkeletonUtils.clone`) del modelo GLB (4.7 MB) e imágenes base, eliminando cualquier demora al renderizar el avatar en la portada.
+* El avatar 3D real (`avatar.glb`, femenino) se renderiza directamente de forma síncrona en el primer fotograma tras el preloader, garantizando coherencia visual inmediata sin imágenes temporales estáticas ni parpadeos.
 
 ---
 
