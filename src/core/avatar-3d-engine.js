@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { avatarModelCache } from './avatar-model-cache.js';
 import { eventBus } from './event-bus.js';
 import { simulatorState } from './simulator-state.js';
 
@@ -105,47 +106,72 @@ export class Avatar3DEngine {
   }
 
   loadModel() {
-    const loader = new GLTFLoader();
-    loader.load(
-      './avatar/avatar.glb',
-      (gltf) => {
-        this.avatarModel = gltf.scene;
-        this.avatarModel.position.set(0, 0, 0);
-
-        // Identify key meshes, materials, and bones
-        this.avatarModel.traverse((node) => {
-          if (node.isBone) {
-            this.bones[node.name] = node;
-          }
-
-          if (node.isMesh) {
-            node.frustumCulled = false;
-
-            // Glasses Frame Mesh (Wolf3D_Glasses)
-            if (node.name.includes('Glasses')) {
-              this.glassesMesh = node;
-              this.setupGlassesFrameMaterial(node);
-              this.createGlassLenses(node);
-            }
-
-            // Head Mesh with Morph Targets
-            if (node.name === 'Wolf3D_Head') {
-              this.headMesh = node;
-              if (node.morphTargetDictionary) {
-                this.morphTargets = node.morphTargetDictionary;
-              }
-            }
-          }
-        });
-
-        this.scene.add(this.avatarModel);
-        this.updateGlassesTint(simulatorState.getCurrentLens(), simulatorState.currentAbsorption);
-      },
-      undefined,
-      (error) => {
-        console.warn('Three.js GLTF fallback: Error loading avatar.glb, keeping fallback illustration.', error);
+    // 1. Si el modelo ya está precargado en memoria (0ms), configurarlo de inmediato sin esperar
+    if (avatarModelCache.isLoaded()) {
+      const clonedScene = avatarModelCache.createModelInstance();
+      if (clonedScene) {
+        this.setupLoadedModel(clonedScene);
+        return;
       }
-    );
+    }
+
+    // 2. Si todavía se está descargando, resolver tan pronto finalice
+    avatarModelCache.load().then((gltf) => {
+      if (gltf) {
+        const clonedScene = avatarModelCache.createModelInstance();
+        if (clonedScene) {
+          this.setupLoadedModel(clonedScene);
+        }
+      }
+    }).catch((error) => {
+      console.warn('Three.js GLTF fallback: Error al instanciar avatar.glb', error);
+    });
+  }
+
+  setupLoadedModel(model) {
+    this.avatarModel = model;
+    this.avatarModel.position.set(0, 0, 0);
+
+    // Identificar huesos, mallas y objetivos morfométricos
+    this.avatarModel.traverse((node) => {
+      if (node.isBone) {
+        this.bones[node.name] = node;
+      }
+
+      if (node.isMesh) {
+        node.frustumCulled = false;
+
+        // Malla del Marco de las Gafas (Wolf3D_Glasses)
+        if (node.name.includes('Glasses')) {
+          this.glassesMesh = node;
+          this.setupGlassesFrameMaterial(node);
+          this.createGlassLenses(node);
+        }
+
+        // Malla de la Cabeza para Expresiones Faciales (Wolf3D_Head)
+        if (node.name === 'Wolf3D_Head') {
+          this.headMesh = node;
+          if (node.morphTargetDictionary) {
+            this.morphTargets = node.morphTargetDictionary;
+          }
+        }
+      }
+    });
+
+    this.scene.add(this.avatarModel);
+
+    // Si hay una imagen de placeholder temporal, ocultarla suavemente
+    if (this.container) {
+      const placeholder = this.container.querySelector('.landing-avatar-placeholder');
+      if (placeholder) {
+        placeholder.classList.add('loaded');
+      }
+    }
+
+    // Aplicar tinte inicial de la lente seleccionada (con previsualización nítida en portada)
+    const initialLens = simulatorState.getCurrentLens();
+    const initialAbsorption = (this.options.isHero && simulatorState.screen === 'landing') ? 0.72 : simulatorState.currentAbsorption;
+    this.updateGlassesTint(initialLens, initialAbsorption);
   }
 
   /**
