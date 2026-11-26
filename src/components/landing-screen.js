@@ -161,6 +161,19 @@ export class LandingScreen {
         <!-- Canvas 3D de Three.js montado dinámicamente -->
       </div>
 
+      <!-- Selector Sutil de Tinte de Cristales para el Avatar en Portada -->
+      <div class="landing-hero-tint-bar" role="toolbar" aria-label="Probar tinte de cristales en el avatar">
+        <span class="hero-tint-label">Tinte del cristal:</span>
+        <div class="hero-tint-swatches">
+          <button type="button" class="hero-tint-btn active" data-lens-id="gens-amethyst" title="Amatista (Signature Gen S)" style="--swatch-color: #8B5CF6;" aria-label="Tinte Amatista"></button>
+          <button type="button" class="hero-tint-btn" data-lens-id="gens-ruby" title="Rubí (Signature Gen S)" style="--swatch-color: #E11D48;" aria-label="Tinte Rubí"></button>
+          <button type="button" class="hero-tint-btn" data-lens-id="gens-sapphire" title="Zafiro (Signature Gen S)" style="--swatch-color: #3B82F6;" aria-label="Tinte Zafiro"></button>
+          <button type="button" class="hero-tint-btn" data-lens-id="gens-emerald" title="Esmeralda (Signature Gen S)" style="--swatch-color: #10B981;" aria-label="Tinte Esmeralda"></button>
+          <button type="button" class="hero-tint-btn" data-lens-id="xtractive-amber" title="Ámbar (XTRActive)" style="--swatch-color: #F59E0B;" aria-label="Tinte Ámbar"></button>
+          <button type="button" class="hero-tint-btn" data-lens-id="xtractive-gray" title="Gris Grafito (XTRActive)" style="--swatch-color: #64748B;" aria-label="Tinte Gris"></button>
+        </div>
+      </div>
+
       <!-- Pie de Página y Botón CTA Central -->
       <footer class="landing-footer">
         <button id="cta-start-experience" class="cta-button-main" type="button" aria-label="Iniciar experiencia de simulación">
@@ -205,6 +218,31 @@ export class LandingScreen {
 
     startBtn.addEventListener('click', () => {
       this.handleStartExperience();
+    });
+
+    // Selector sutil de tinte de cristales en portada
+    const tintBtns = this.element.querySelectorAll('.hero-tint-btn');
+    tintBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const lensId = btn.getAttribute('data-lens-id');
+        simulatorState.setLens(lensId);
+
+        tintBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const currentLens = simulatorState.getCurrentLens();
+        if (this.heroAvatar3D) {
+          this.heroAvatar3D.updateGlassesTint(currentLens, 0.72);
+        }
+      });
+    });
+
+    // Mantener selector de portada sincronizado si la lente cambia
+    eventBus.on('lens:change', ({ lens }) => {
+      tintBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lens-id') === lens.id);
+      });
     });
 
     // Control de pantalla completa: EN LA PORTADA SOLO APARECE BOTÓN DE SALIR SI ESTÁ EN PANTALLA COMPLETA

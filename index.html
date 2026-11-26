@@ -16,12 +16,22 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Luminix">
 
-  <!-- Metadatos Open Graph -->
+  <!-- Metadatos Open Graph / WhatsApp / Redes Sociales -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Visiometric Labs">
-  <meta property="og:title" content="Luminix by Visiometric Labs — Simulador de Lentes Fotosensibles y Transitions®">
-  <meta property="og:description" content="Simulador clínico y probador virtual interactivo en primera persona de lentes Transitions® Signature Gen S, XTRActive y Style Mirrors a 60 FPS.">
+  <meta property="og:site_name" content="Visiometric Labs • JayzirTech">
+  <meta property="og:title" content="Luminix™ | Simulador Clínico de Lentes Fotosensibles y Transitions®">
+  <meta property="og:description" content="Simulador clínico y probador virtual interactivo en primera persona de lentes Transitions® (Signature Gen S, XTRActive y Style Mirrors) con avatar 3D reactivo en tiempo real.">
   <meta property="og:url" content="https://visiometric-labs.github.io/transitions-simulator/">
+  <meta property="og:image" content="https://visiometric-labs.github.io/transitions-simulator/branding/og-card-whatsapp.jpg">
+  <meta property="og:image:secure_url" content="https://visiometric-labs.github.io/transitions-simulator/branding/og-card-whatsapp.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Luminix by Visiometric Labs - Simulador de Lentes Fotosensibles Transitions">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Luminix™ | Simulador Clínico de Lentes Fotosensibles Transitions®">
+  <meta name="twitter:description" content="Simulador clínico y probador virtual interactivo en primera persona de lentes Transitions® Signature Gen S, XTRActive y Style Mirrors.">
+  <meta name="twitter:image" content="https://visiometric-labs.github.io/transitions-simulator/branding/og-card-whatsapp.jpg">
 
   <!-- Tipografía Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,6 +45,28 @@
   <link rel="preload" as="image" href="./avatar/avatar-clapping.png">
 </head>
 <body>
+  <!-- Pantalla de Precarga Óptica Inicial (Preloader) -->
+  <div id="app-preloader" class="app-preloader">
+    <div class="preloader-content">
+      <div class="preloader-logo-glow">
+        <img src="./branding/favicon.svg" alt="Luminix Logo" width="72" height="72" class="preloader-logo-img">
+      </div>
+      <div class="preloader-text-group">
+        <h1 class="preloader-title">Luminix</h1>
+        <span class="preloader-sub">by Visiometric Labs • JayzirTech</span>
+      </div>
+      <div class="preloader-progress-box">
+        <div class="preloader-bar-track">
+          <div id="preloader-progress-fill" class="preloader-bar-fill"></div>
+        </div>
+        <div class="preloader-status-row">
+          <span id="preloader-status" class="preloader-status-text">Iniciando motor óptico Transitions®...</span>
+          <span id="preloader-percentage" class="preloader-percentage-text">12%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Contenedor Raíz de la Aplicación -->
   <div id="app-container"></div>
 

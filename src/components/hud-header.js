@@ -14,10 +14,15 @@ export class HudHeader {
     this.element.className = 'hud-header-container';
 
     this.element.innerHTML = `
-      <!-- 1. Marca y Logo (Superior Izquierda) -->
-      <div id="btn-return-landing" class="brand-badge" title="Volver a la portada de bienvenida">
-        <span class="brand-title">Luminix</span>
-        <span class="brand-sub">by Visiometric Labs</span>
+      <!-- 1. Marca y Logo (Superior Izquierda) con estilo unificado de Portada -->
+      <div id="btn-return-landing" class="brand-badge" title="Volver a la portada de bienvenida" role="button" tabindex="0">
+        <div class="brand-badge-icon">
+          <img src="./branding/favicon.svg" alt="Luminix Logo" width="34" height="34" />
+        </div>
+        <div class="brand-badge-text">
+          <span class="brand-title">Luminix</span>
+          <span class="brand-sub">by Visiometric Labs • JayzirTech</span>
+        </div>
       </div>
 
       <!-- 2. Medidor Central de Intensidad Read-Only -->

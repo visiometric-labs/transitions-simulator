@@ -225,6 +225,11 @@ export class Avatar3DEngine {
       this.lensMesh.bind(glassesNode.skeleton, glassesNode.bindMatrix);
     }
     this.avatarModel.add(this.lensMesh);
+
+    // Aplicar tinte inicial de la lente seleccionada (con previsualización nítida en portada)
+    const initialLens = simulatorState.getCurrentLens();
+    const initialAbsorption = (this.options.isHero && simulatorState.screen === 'landing') ? 0.72 : simulatorState.currentAbsorption;
+    this.updateGlassesTint(initialLens, initialAbsorption);
   }
 
   /**
@@ -248,9 +253,20 @@ export class Avatar3DEngine {
   }
 
   bindEvents() {
+    // Escucha de cambio de lente
+    eventBus.on('lens:change', ({ lens }) => {
+      const absorption = (this.options.isHero && simulatorState.screen === 'landing')
+        ? 0.72
+        : simulatorState.currentAbsorption;
+      this.updateGlassesTint(lens, absorption);
+    });
+
     // Escucha cinética de oscurecimiento de lentes
     eventBus.on('kinetic:update', ({ absorption, lens }) => {
-      this.updateGlassesTint(lens, absorption);
+      const effAbsorption = (this.options.isHero && simulatorState.screen === 'landing')
+        ? 0.72
+        : absorption;
+      this.updateGlassesTint(lens, effAbsorption);
     });
 
     // Reacciones del avatar (aplauso / alegría)

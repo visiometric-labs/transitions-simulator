@@ -295,6 +295,71 @@
   pointer-events: none;
 }
 
+/* Selector Sutil de Tinte de Cristales para el Avatar en Portada */
+.landing-hero-tint-bar {
+  position: absolute;
+  top: calc(48% + 205px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40);
+  z-index: 15;
+  transition: all var(--transition-fast);
+}
+
+.landing-hero-tint-bar:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(15, 23, 42, 0.88);
+}
+
+.hero-tint-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-tint-swatches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-tint-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--swatch-color);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.hero-tint-btn:hover {
+  transform: scale(1.22);
+  border-color: #FFFFFF;
+  box-shadow: 0 0 10px var(--swatch-color);
+}
+
+.hero-tint-btn.active {
+  transform: scale(1.25);
+  border-color: #FFFFFF;
+  box-shadow: 0 0 14px var(--swatch-color), 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
 /* Footer y Botón CTA Central */
 .landing-footer {
   display: flex;
@@ -418,5 +483,17 @@
   .landing-hero-center {
     width: 380px;
     height: 380px;
+  }
+  .landing-hero-tint-bar {
+    top: calc(48% + 155px);
+    padding: 5px 12px;
+    gap: 8px;
+  }
+  .hero-tint-btn {
+    width: 19px;
+    height: 19px;
+  }
+  .hero-tint-label {
+    font-size: 0.62rem;
   }
 }

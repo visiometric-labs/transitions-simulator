@@ -86,15 +86,27 @@ class SimulatorState {
   }
 
   setupInteractionListeners() {
+    let lastResetTime = 0;
+
     const onInteract = () => {
       this.lastInteractionTime = Date.now();
-      this.resetKioskTimer();
+      // Throttle el reinicio del temporizador para evitar sobrecarga en movimientos de puntero continuos
+      if (Date.now() - lastResetTime > 1000) {
+        lastResetTime = Date.now();
+        this.resetKioskTimer();
+      }
     };
 
-    window.addEventListener('mousemove', onInteract, { passive: true });
-    window.addEventListener('mousedown', onInteract, { passive: true });
-    window.addEventListener('touchstart', onInteract, { passive: true });
-    window.addEventListener('keydown', onInteract, { passive: true });
+    const interactionEvents = [
+      'mousemove', 'mousedown', 'mouseup', 'click',
+      'touchstart', 'touchmove', 'touchend',
+      'pointerdown', 'pointermove', 'pointerup',
+      'keydown', 'wheel', 'scroll'
+    ];
+
+    interactionEvents.forEach(evt => {
+      window.addEventListener(evt, onInteract, { passive: true });
+    });
   }
 
   resetKioskTimer() {
@@ -109,13 +121,23 @@ class SimulatorState {
 
   handleKioskTimeout() {
     if (this.screen !== 'landing') {
-      console.log('Modo Kiosco: 5 minutos de inactividad detectados. Retornando a portada...');
-      this.currentLensId = 'gens-amethyst';
-      this.currentSceneId = 'park';
+      console.log('⏰ Modo Kiosco: 5 minutos de inactividad completados. Regresando a la portada de bienvenida...');
+      
+      // Salir de pantalla completa si estaba activada
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+
+      // Restablecer configuraciones predeterminadas de simulación
+      this.setScene('park');
+      this.setLens('gens-amethyst');
       this.currentAbsorption = 0.05;
       this.setScreen('landing');
       eventBus.emit('kiosk:reset', {});
     }
+
+    // Volver a armar el temporizador para la siguiente sesión
+    this.resetKioskTimer();
   }
 }
 

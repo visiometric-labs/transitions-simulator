@@ -5,6 +5,7 @@ import './styles/landing.css';
 
 import { simulatorState } from './core/simulator-state.js';
 import { kineticEngine } from './core/kinetic-engine.js';
+import { AppPreloader } from './components/preloader.js';
 import { SceneManager } from './scenes/scene-manager.js';
 import { GlassesPOV } from './components/glasses-pov.js';
 import { LandingScreen } from './components/landing-screen.js';
@@ -19,7 +20,11 @@ class LuminixApp {
     this.init();
   }
 
-  init() {
+  async init() {
+    // 0. Pantalla de Precarga y Descarga de Recursos Ópticos Críticos
+    const preloader = new AppPreloader();
+    await preloader.loadAssets();
+
     // 1. Inicializar máquina de estado y temporizador Kiosco (5 min)
     simulatorState.init();
 
