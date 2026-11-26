@@ -5,6 +5,10 @@
 [![Despliegue GitHub Pages](https://github.com/visiometric-labs/transitions-simulator/actions/workflows/deploy.yml/badge.svg)](https://visiometric-labs.github.io/transitions-simulator/)
 [![Demo En Vivo](https://img.shields.io/badge/Demo%20En%20Vivo-GitHub%20Pages-38BDF8?style=flat&logo=github)](https://visiometric-labs.github.io/transitions-simulator/)
 
+<p align="center">
+  <img src="public/branding/og-card-whatsapp.png" alt="Luminix™ by Visiometric Labs • JayzirTech" width="100%" style="border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+</p>
+
 ---
 
 ## 🎯 Descripción General
@@ -56,6 +60,22 @@ Permite al paciente experimentar de forma vívida e interactiva la diferencia en
 | **XTRActive® Polarized** | Gris Polarizado, Grafito Verde | Máxima protección solar y fotoprotección en cabina de automóvil con corte de reflejos horizontales. |
 | **Style Mirrors™** | Azul Flash, Plata Flash, Oro Flash | Recubrimiento de espejo moderno en exteriores que se atenúa a un brillo sutil en interiores. |
 | **Monofocal Estándar** | Fotocromático Básico | Lente tradicional con activación estándar para comparativa pedagógica frente a Gen S. |
+
+---
+
+## 🎨 Identidad Visual y Recursos Gráficos
+
+El proyecto incorpora un sistema de branding e identidad visual de grado óptico clínico, con activos listos para redes sociales, WhatsApp y plataformas de mensajería:
+
+| Recurso | Archivo | Dimensiones | Uso y Descripción |
+| :--- | :--- | :--- | :--- |
+| **Banner Social / WhatsApp Card** | [`public/branding/og-card-whatsapp.png`](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/public/branding/og-card-whatsapp.png) | 1200 × 630 px | Tarjeta enriquecida para previsualización en WhatsApp, Open Graph, Facebook, LinkedIn y Twitter Card. Incluye la montura oftálmica luminiscente, retícula óptica y tipografía institucional. |
+| **Foto de Perfil Institucional** | [`public/branding/profile-picture.png`](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/public/branding/profile-picture.png) | 1024 × 1024 px | Avatar cuadrado de alta fidelidad para perfiles corporativos de Visiometric Labs y JayzirTech. |
+| **Isotipo Vectorial (Favicon)** | [`public/branding/favicon.svg`](file:///c:/Users/jayzi/OneDrive/Desktop/JayzirTech/Proyecto%20Ópticas/transitions-simulator/public/branding/favicon.svg) | SVG vectorial | Isotipo con retículos circulares concéntricos, líneas de mira y montura geométrica en cian eléctrico y blanco puro. |
+
+<p align="center">
+  <img src="public/branding/og-card-whatsapp.png" alt="Tarjeta Social WhatsApp Luminix" width="75%" style="border-radius: 12px; margin: 12px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.4);" />
+</p>
 
 ---
 

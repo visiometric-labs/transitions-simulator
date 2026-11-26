@@ -12,6 +12,10 @@
 * **Carpeta Local del Proyecto:** `transitions-simulator`
 * **Repositorio Remoto en GitHub:** `https://github.com/visiometric-labs/transitions-simulator.git`
 * **URL en Producción (GitHub Pages):** `https://visiometric-labs.github.io/transitions-simulator/`
+* **Identidad Visual y Activos Gráficos:**
+  - `public/branding/og-card-whatsapp.png` (y `.jpg`): Banner social 1200×630 para WhatsApp, Open Graph y Twitter Cards.
+  - `public/branding/profile-picture.png` (y `.jpg`): Avatar institucional 1024×1024 con isotipo Luminix.
+  - `public/branding/favicon.svg`: Isotipo vectorial con retículo óptico y gafas estilizadas.
 * **Ecosistema de Hermanos:**
   - `filters-simulator` -> **Chromatis** (Simulador clínico de tratamientos ópticos: Blue Cut, Conducción, Crizal Antirreflejo)
   - `refraction-simulator` -> **Ocularis** (Simulador clínico de refracción óptica, patologías y anatomía ocular)
@@ -74,11 +78,17 @@ A fecha de hoy, la plataforma cuenta con una arquitectura de grado clínico comp
 * **Museo de Arte:** Interiores con luz artificial suave, UV 0.1, aclarado acelerado.
 * **Transición de 200 ms:** Tanto el fondo como el interior de los cristales binoculares realizan una progresión sincronizada de 200 ms.
 
-### D. Portada Clínica y Modo Kiosco
+### D. Portada Clínica, Selector de Tinte Sutil y Modo Kiosco
 * Archivos: `src/components/landing-screen.js`, `src/styles/landing.css`.
 * Sin sliders inertes; incluye fichas clínicas de la tecnología *Transitions® Gen S™* y la *Cabina de Demostración*.
+* Selector de tintes sutil (`.landing-hero-tint-bar`) ubicado justo debajo del marco del avatar con el mismo ancho exacto, permitiendo previsualizar tonalidades (Amatista, Rubí, Zafiro, Esmeralda, Ámbar, Gris) antes de entrar al simulador.
 * Botón de salir de pantalla completa condicional (solo visible si el navegador ya está en pantalla completa).
-* Temporizador de inactividad de **5 minutos** que regresa a la portada automáticamente.
+* Temporizador de inactividad de **5 minutos** que regresa a la portada automáticamente con reseteo de escena y lente.
+
+### E. Preloader Clínico y Precarga Instantánea del Avatar 3D
+* Archivos: `src/components/preloader.js`, `src/core/avatar-model-cache.js`.
+* Pantalla de precarga inicial con animación de retícula óptica, barra de progreso y porcentaje.
+* Precarga previa y clonación en memoria (`avatarModelCache.preload()` con `SkeletonUtils.clone`) del modelo GLB (4.7 MB) e imágenes base, eliminando cualquier demora al renderizar el avatar en la portada.
 
 ---
 
