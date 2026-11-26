@@ -156,21 +156,24 @@ export class LandingScreen {
         </div>
       </aside>
 
-      <!-- Avatar Hero Central (3D Real con Three.js y esqueleto .glb interactivo) -->
-      <div id="landing-hero-stage" class="landing-hero-center">
-        <!-- Canvas 3D de Three.js montado dinámicamente -->
-      </div>
+      <!-- Contenedor Central: Avatar Hero y Selector de Tinte -->
+      <div class="landing-hero-container">
+        <!-- Avatar Hero Central (3D Real con Three.js y esqueleto .glb interactivo) -->
+        <div id="landing-hero-stage" class="landing-hero-center">
+          <!-- Canvas 3D de Three.js montado dinámicamente -->
+        </div>
 
-      <!-- Selector Sutil de Tinte de Cristales para el Avatar en Portada -->
-      <div class="landing-hero-tint-bar" role="toolbar" aria-label="Probar tinte de cristales en el avatar">
-        <span class="hero-tint-label">Tinte del cristal:</span>
-        <div class="hero-tint-swatches">
-          <button type="button" class="hero-tint-btn active" data-lens-id="gens-amethyst" title="Amatista (Signature Gen S)" style="--swatch-color: #8B5CF6;" aria-label="Tinte Amatista"></button>
-          <button type="button" class="hero-tint-btn" data-lens-id="gens-ruby" title="Rubí (Signature Gen S)" style="--swatch-color: #E11D48;" aria-label="Tinte Rubí"></button>
-          <button type="button" class="hero-tint-btn" data-lens-id="gens-sapphire" title="Zafiro (Signature Gen S)" style="--swatch-color: #3B82F6;" aria-label="Tinte Zafiro"></button>
-          <button type="button" class="hero-tint-btn" data-lens-id="gens-emerald" title="Esmeralda (Signature Gen S)" style="--swatch-color: #10B981;" aria-label="Tinte Esmeralda"></button>
-          <button type="button" class="hero-tint-btn" data-lens-id="xtractive-amber" title="Ámbar (XTRActive)" style="--swatch-color: #F59E0B;" aria-label="Tinte Ámbar"></button>
-          <button type="button" class="hero-tint-btn" data-lens-id="xtractive-gray" title="Gris Grafito (XTRActive)" style="--swatch-color: #64748B;" aria-label="Tinte Gris"></button>
+        <!-- Selector Sutil de Tinte de Cristales para el Avatar en Portada (Mismo ancho que el marco del avatar) -->
+        <div class="landing-hero-tint-bar" role="toolbar" aria-label="Probar tinte de cristales en el avatar">
+          <span class="hero-tint-label">Tinte del cristal:</span>
+          <div class="hero-tint-swatches">
+            <button type="button" class="hero-tint-btn active" data-lens-id="gens-amethyst" title="Amatista (Signature Gen S)" style="--swatch-color: #8B5CF6;" aria-label="Tinte Amatista"></button>
+            <button type="button" class="hero-tint-btn" data-lens-id="gens-ruby" title="Rubí (Signature Gen S)" style="--swatch-color: #E11D48;" aria-label="Tinte Rubí"></button>
+            <button type="button" class="hero-tint-btn" data-lens-id="gens-sapphire" title="Zafiro (Signature Gen S)" style="--swatch-color: #3B82F6;" aria-label="Tinte Zafiro"></button>
+            <button type="button" class="hero-tint-btn" data-lens-id="gens-emerald" title="Esmeralda (Signature Gen S)" style="--swatch-color: #10B981;" aria-label="Tinte Esmeralda"></button>
+            <button type="button" class="hero-tint-btn" data-lens-id="xtractive-amber" title="Ámbar (XTRActive)" style="--swatch-color: #F59E0B;" aria-label="Tinte Ámbar"></button>
+            <button type="button" class="hero-tint-btn" data-lens-id="xtractive-gray" title="Gris Grafito (XTRActive)" style="--swatch-color: #64748B;" aria-label="Tinte Gris"></button>
+          </div>
         </div>
       </div>
 

@@ -280,37 +280,46 @@
   color: var(--text-dim);
 }
 
-/* Avatar Hero Central */
-.landing-hero-center {
+/* Contenedor Central: Avatar Hero y Selector de Tinte */
+.landing-hero-container {
   position: absolute;
   top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Avatar Hero Central */
+.landing-hero-center {
+  position: relative;
+  width: 480px;
   height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 5;
   pointer-events: none;
 }
 
-/* Selector Sutil de Tinte de Cristales para el Avatar en Portada */
+/* Selector Sutil de Tinte de Cristales para el Avatar en Portada (Mismo ancho que el marco del avatar) */
 .landing-hero-tint-bar {
-  position: absolute;
-  top: calc(48% + 205px);
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 16px;
+  justify-content: space-between;
+  padding: 8px 20px;
   background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40);
-  z-index: 15;
+  pointer-events: auto;
   transition: all var(--transition-fast);
 }
 
@@ -480,13 +489,18 @@
   .landing-info-card {
     display: none;
   }
+  .landing-hero-container {
+    width: 360px;
+    top: 45%;
+    gap: 8px;
+  }
   .landing-hero-center {
-    width: 380px;
-    height: 380px;
+    width: 360px;
+    height: 360px;
   }
   .landing-hero-tint-bar {
-    top: calc(48% + 155px);
-    padding: 5px 12px;
+    width: 100%;
+    padding: 6px 14px;
     gap: 8px;
   }
   .hero-tint-btn {
@@ -495,5 +509,21 @@
   }
   .hero-tint-label {
     font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero-container {
+    width: 320px;
+    top: 44%;
+    gap: 6px;
+  }
+  .landing-hero-center {
+    width: 320px;
+    height: 320px;
+  }
+  .landing-hero-tint-bar {
+    width: 100%;
+    padding: 5px 12px;
   }
 }
